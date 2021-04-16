@@ -2,6 +2,7 @@
 #include <conio.h>
 #include <fstream>
 #include <cstring>
+#include <cstdio>
 using namespace std;
 
 
@@ -21,11 +22,13 @@ int main(){
     do{
         cout<<"\n1. Add \n2. Modify \n3. Display \n4. Exit \nEnter your choice: ";
         cin>>ch;
+        cin.clear();
+        cin.sync();
         switch(ch){
             case 1:
-                    fo.open("anime-new.dat", ios::out | ios::binary | ios::app);
+                    fo.open("anime.dat", ios::out | ios::binary | ios::app);
                     cout<<"Anime name: ";
-                    cin>>name;
+                    cin.getline(name, 100);
                     cout<<"Recent ep watched: ";
                     cin>>ep;
                     cout<<"Have you read the manga (y/n): ";
@@ -47,10 +50,9 @@ int main(){
         
             case 2: 
                     flag = 0;
-                    fi.open("anime-new.dat", ios::in | ios::binary);
-                    //fo.open("temp.dat", ios::out | ios::binary | ios::app);
+                    fi.open("anime.dat", ios::in | ios::binary);
                     cout<<"\nEnter the name of the anime to be modified: ";
-                    cin>>m_name;
+                    cin.getline(m_name, 100);
 
                         while(fi.read((char*)&al, sizeof(al))){
                             if(strcmp(al.anime_name, m_name) == 0){
@@ -59,10 +61,12 @@ int main(){
                                     cout<<"\nWhat is to be updated? \n1. Anime name \n2. Episodes watched \n3. Manga read \n4. Exit";
                                     cout<<"\nEnter your choice: ";
                                     cin>>choice;
+                                    cin.clear();
+                                    cin.sync();
                                     switch(choice)
                                     {
                                         case 1: cout<<"Enter new anime name: ";
-                                                cin>>updated_anime_name;
+                                                cin.getline(updated_anime_name, 100);
                                                 strcpy(al.anime_name, updated_anime_name);
                                                 break;
                                         case 2: cout<<"Enter recent episode watched: ";
@@ -90,12 +94,12 @@ int main(){
                                 return 1;
                         }
                     fi.close();
-                    remove("anime-new.dat");
-                    rename("temp.dat", "anime-new.dat");
+                    remove("anime.dat");
+                    rename("temp.dat", "anime.dat");
                     break;
 
             case 3:
-                    fi.open("anime-new.dat", ios::in | ios::binary);
+                    fi.open("anime.dat", ios::in | ios::binary);
                     if(!fi){
                         cout<<"\nError in opening the file!";
                         return 1;
