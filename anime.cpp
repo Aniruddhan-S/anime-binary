@@ -2,21 +2,20 @@
 #include <conio.h>
 #include <fstream>
 #include <cstring>
-#include <cstdio>
+
 using namespace std;
 
-
 struct Anime_list{
-    char anime_name[100]; //anime name
-    int recent_ep_watched; //episode number
-    char manga; //yes or no
+    char anime_name[100];
+    int recent_ep_watched;
+    char manga;
 };
 
 int main(){
     
     ifstream fi;
     ofstream fo;
-    Anime_list al; // object of the struct
+    Anime_list al;
     char name[100], mng, m_name[100], updated_anime_name[100], updated_manga_status;
     int ep, ch, choice, updated_episode, flag, pos;
     do{
@@ -63,17 +62,19 @@ int main(){
                                     cin>>choice;
                                     cin.clear();
                                     cin.sync();
-                                    switch(choice)
-                                    {
-                                        case 1: cout<<"Enter new anime name: ";
+                                    switch(choice){
+                                        case 1: 
+                                                cout<<"Enter new anime name: ";
                                                 cin.getline(updated_anime_name, 100);
                                                 strcpy(al.anime_name, updated_anime_name);
                                                 break;
-                                        case 2: cout<<"Enter recent episode watched: ";
+                                        case 2: 
+                                                cout<<"Enter recent episode watched: ";
                                                 cin>>updated_episode;
                                                 al.recent_ep_watched = updated_episode;
                                                 break;
-                                        case 3: cout<<"Enter manga read status: ";
+                                        case 3: 
+                                                cout<<"Enter manga read status: ";
                                                 cin>>updated_manga_status;
                                                 al.manga = updated_manga_status;
                                                 break;
@@ -114,7 +115,5 @@ int main(){
                     break;
         }
     }while(ch != 4);
-    
-    getch();
-    return 0;
+return 0;
 }
