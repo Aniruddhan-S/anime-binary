@@ -17,7 +17,7 @@ int main(){
     ifstream fi;
     ofstream fo;
     Anime_list al;
-    char name[100], to_be_updated[100], to_be_deleted[100], updated_anime_name[100], updated_manga_status, mng;
+    char name[100], to_be_updated[100], to_be_deleted[100], updated_anime_name[100], updated_manga_status, mng, del;
     int ep, ch, choice, updated_episode, flag, mng_chap, updated_manga_chap;
     do{
         cout<<"\n1. Add \n2. Modify \n3. Display \n4. Delete \n5. Exit \nEnter your choice: ";
@@ -145,34 +145,40 @@ int main(){
                     break;
 
             case 4: 
-                    fi.open("anime.dat", ios::in | ios::binary);
-                    if(!fi){
-                        cout<<"\nError in opening the file!";
-                        return 1;
-                    }
-                    cout<<"\nEnter the name of the anime to be deleted: ";
-                    cin.getline(to_be_deleted, 100);
-
-                        while(fi.read((char*)&al, sizeof(al))){
-                            if(strcmp(al.anime_name, to_be_deleted) == 0){
-                                flag = 1;
-                                cout<<"\nAnime removed from the list";
-                            }
-                            else{
-                                fo.open("delete.dat", ios::out | ios::binary | ios::app);
-                                fo.write((char*)&al, sizeof(Anime_list));
-                                fo.close();
-                            }
-                        }
-                        if(!flag){
-                            cout<<"\n Record not found!";
-                            remove("delete.dat");
+                    cout<<"\nAre you sure you want to delete an anime from the list (y/n): ";
+                    cin>>del;
+                    cin.clear();
+                    cin.sync();
+                    if(del == 'y'){
+                        fi.open("anime.dat", ios::in | ios::binary);
+                        if(!fi){
+                            cout<<"\nError in opening the file!";
                             return 1;
                         }
-                        fi.close();
-                        remove("anime.dat");
-                        rename("delete.dat", "anime.dat");
-                        break;
+                        cout<<"\nEnter the name of the anime to be deleted: ";
+                        cin.getline(to_be_deleted, 100);
+
+                            while(fi.read((char*)&al, sizeof(al))){
+                                if(strcmp(al.anime_name, to_be_deleted) == 0){
+                                    flag = 1;
+                                    cout<<"\nAnime removed from the list";
+                                }
+                                else{
+                                    fo.open("delete.dat", ios::out | ios::binary | ios::app);
+                                    fo.write((char*)&al, sizeof(Anime_list));
+                                    fo.close();
+                                }
+                            }
+                            if(!flag){
+                                cout<<"\n Record not found!";
+                                remove("delete.dat");
+                                return 1;
+                            }
+                            fi.close();
+                            remove("anime.dat");
+                            rename("delete.dat", "anime.dat");
+                    }                
+                    break;    
         }
     }while(ch != 5);
 return 0;
