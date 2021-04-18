@@ -9,6 +9,7 @@ struct Anime_list{
     char anime_name[100];
     int recent_ep_watched;
     char manga;
+    int recent_chap_read;
 };
 
 int main(){
@@ -17,7 +18,7 @@ int main(){
     ofstream fo;
     Anime_list al;
     char name[100], to_be_updated[100], to_be_deleted[100], updated_anime_name[100], updated_manga_status, mng;
-    int ep, ch, choice, updated_episode, flag;
+    int ep, ch, choice, updated_episode, flag, mng_chap, updated_manga_chap;
     do{
         cout<<"\n1. Add \n2. Modify \n3. Display \n4. Delete \n5. Exit \nEnter your choice: ";
         cin>>ch;
@@ -32,6 +33,15 @@ int main(){
                     cin>>ep;
                     cout<<"Have you read the manga (y/n): ";
                     cin>>mng;
+
+                    if(mng == 'y'){
+                        cout<<"Enter recent manga chapter read: ";
+                        cin>>mng_chap;
+                        al.recent_chap_read = mng_chap;
+                    }
+                    else if(mng == 'n'){
+                        al.recent_chap_read = 0;
+                    }
 
                     strcpy(al.anime_name, name);
                     al.recent_ep_watched = ep;
@@ -61,7 +71,7 @@ int main(){
                             if(strcmp(al.anime_name, to_be_updated) == 0){
                                 flag = 1;
                                 do{
-                                    cout<<"\nWhat is to be updated? \n1. Anime name \n2. Episodes watched \n3. Manga read \n4. Exit";
+                                    cout<<"\nWhat is to be updated? \n1. Anime name \n2. Episodes watched \n3. Manga \n4. Exit";
                                     cout<<"\nEnter your choice: ";
                                     cin>>choice;
                                     cin.clear();
@@ -78,9 +88,21 @@ int main(){
                                                 al.recent_ep_watched = updated_episode;
                                                 break;
                                         case 3: 
-                                                cout<<"Enter manga read status: ";
-                                                cin>>updated_manga_status;
-                                                al.manga = updated_manga_status;
+                                                if(al.manga == 'y'){
+                                                    cout<<"Enter recent manga chapter read: ";
+                                                    cin>>updated_manga_chap;
+                                                    al.recent_chap_read = updated_manga_chap;
+                                                }
+                                                else if(al.manga == 'n'){
+                                                    cout<<"Enter manga read status: ";
+                                                    cin>>updated_manga_status;
+                                                    al.manga = updated_manga_status;
+                                                    if(updated_manga_status == 'y'){
+                                                        cout<<"Enter recent manga chapter read: ";
+                                                        cin>>updated_manga_chap;
+                                                        al.recent_chap_read = updated_manga_chap;
+                                                    }
+                                                }
                                                 break;
                                     }
                                 }while(choice != 4);
@@ -116,6 +138,8 @@ int main(){
                         cout<<"Anime name: "<<al.anime_name<<endl;
                         cout<<"Recent episode watched: "<<al.recent_ep_watched<<endl;
                         cout<<"Manga read: "<<al.manga<<endl;
+                        if(al.manga == 'y')
+                            cout<<"Recent manga chapter read: "<<al.recent_chap_read<<endl;
                     }
                     fi.close();
                     break;
