@@ -4,9 +4,13 @@
 This is a simple C++ binary file handling program, to keep track of the anime that i've watched and that i'm watching.
 
 **As of now it can:**
+
   **- add the name of the anime, number of episodes watched, and if i've read the manga or not**
+
   **- updated everything mentioned above**
+  
   **- display everything**
+  
   **- delete an anime**
 
 
