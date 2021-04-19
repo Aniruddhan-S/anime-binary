@@ -7,6 +7,7 @@ using namespace std;
 
 struct Anime_list{
     char anime_name[100];
+    char completed;
     int recent_ep_watched;
     char manga;
     int recent_chap_read;
@@ -17,7 +18,7 @@ int main(){
     ifstream fi;
     ofstream fo;
     Anime_list al;
-    char name[100], to_be_updated[100], to_be_deleted[100], updated_anime_name[100], updated_manga_status, mng, del;
+    char name[100], to_be_updated[100], to_be_deleted[100], updated_anime_name[100], updated_manga_status, mng, del, anime_completed;
     int ep, ch, choice, updated_episode, flag, mng_chap, updated_manga_chap;
     do{
         cout<<"\n1. Add \n2. Modify \n3. Display \n4. Delete \n5. Exit \nEnter your choice: ";
@@ -29,8 +30,15 @@ int main(){
                     fo.open("anime.dat", ios::out | ios::binary | ios::app);
                     cout<<"Anime name: ";
                     cin.getline(name, 100);
-                    cout<<"Recent ep watched: ";
-                    cin>>ep;
+                    cout<<"Have you completed the anime (y/n): ";
+                    cin>>anime_completed;
+                    
+                    if(anime_completed == 'n'){
+                        cout<<"Enter the recent episode watched: ";
+                        cin>>ep;
+                        al.recent_ep_watched = ep;
+                    }
+
                     cout<<"Have you read the manga (y/n): ";
                     cin>>mng;
 
@@ -44,7 +52,7 @@ int main(){
                     }
 
                     strcpy(al.anime_name, name);
-                    al.recent_ep_watched = ep;
+                    al.completed = anime_completed;
                     al.manga = mng;
                     
                     cout<<"\nWriting into binary file..."<<endl;
@@ -71,7 +79,7 @@ int main(){
                             if(strcmp(al.anime_name, to_be_updated) == 0){
                                 flag = 1;
                                 do{
-                                    cout<<"\nWhat is to be updated? \n1. Anime name \n2. Episodes watched \n3. Manga \n4. Exit";
+                                    cout<<"\nWhat is to be updated? \n1. Anime name \n2. Episodes  \n3. Manga \n4. Exit";
                                     cout<<"\nEnter your choice: ";
                                     cin>>choice;
                                     cin.clear();
@@ -83,9 +91,16 @@ int main(){
                                                 strcpy(al.anime_name, updated_anime_name);
                                                 break;
                                         case 2: 
-                                                cout<<"Enter recent episode watched: ";
-                                                cin>>updated_episode;
-                                                al.recent_ep_watched = updated_episode;
+                                                if(al.completed == 'n'){
+                                                    cout<<"Have you finished watching the anime: ";
+                                                    cin>>anime_completed;
+                                                    al.completed = anime_completed;
+                                                    if(al.completed == 'n'){
+                                                        cout<<"Enter recent episode watched: ";
+                                                        cin>>updated_episode;
+                                                        al.recent_ep_watched = updated_episode;
+                                                    }
+                                                }
                                                 break;
                                         case 3: 
                                                 if(al.manga == 'y'){
@@ -136,7 +151,9 @@ int main(){
                     while(fi.read((char*)&al, sizeof(Anime_list))){
                         cout<<"\n-----------------------------------\n";
                         cout<<"Anime name: "<<al.anime_name<<endl;
-                        cout<<"Recent episode watched: "<<al.recent_ep_watched<<endl;
+                        cout<<"Anime completed: "<<al.completed<<endl;
+                        if(al.completed == 'n')
+                            cout<<"Recent episode watched: "<<al.recent_ep_watched<<endl;
                         cout<<"Manga read: "<<al.manga<<endl;
                         if(al.manga == 'y')
                             cout<<"Recent manga chapter read: "<<al.recent_chap_read<<endl;
