@@ -27,23 +27,24 @@ int main(){
         cin.sync();
         switch(ch){
             case 1:
+                    cout<<"\n<----Add---->";
                     fo.open("anime.dat", ios::out | ios::binary | ios::app);
-                    cout<<"Anime name: ";
+                    cout<<"\n Anime name: ";
                     cin.getline(name, 100);
-                    cout<<"Have you completed the anime (y/n): ";
+                    cout<<" Have you completed the anime (y/n): ";
                     cin>>anime_completed;
                     
                     if(anime_completed == 'n'){
-                        cout<<"Enter the recent episode watched: ";
+                        cout<<" Enter the recent episode watched: ";
                         cin>>ep;
                         al.recent_ep_watched = ep;
                     }
 
-                    cout<<"Have you read the manga (y/n): ";
+                    cout<<" Have you read the manga (y/n): ";
                     cin>>mng;
 
                     if(mng == 'y'){
-                        cout<<"Enter recent manga chapter read: ";
+                        cout<<" Enter recent manga chapter read: ";
                         cin>>mng_chap;
                         al.recent_chap_read = mng_chap;
                     }
@@ -60,18 +61,20 @@ int main(){
                     fo.close();
 
                     if(!fo.good()){
-                        cout<<"\nError occured at the time of writing!";
+                        cout<<"\nERROR OCCURED AT THE TIME OF WRITING!";
                         return 1;
                     }
+                    cout<<"\n<----Exit---->";
                     break;
         
             case 2: 
                     flag = 0;
                     fi.open("anime.dat", ios::in | ios::binary);
                     if(!fi){
-                        cout<<"\nError in opening the file!";
+                        cout<<"\nERROR OCCURED WHILE OPENING THE FILE!";
                         return 1;
                     }
+                    cout<<"\n<----Modify---->";
                     cout<<"\nEnter the name of the anime to be modified: ";
                     cin.getline(to_be_updated, 100);
 
@@ -86,17 +89,17 @@ int main(){
                                     cin.sync();
                                     switch(choice){
                                         case 1: 
-                                                cout<<"Enter new anime name: ";
+                                                cout<<" Enter new anime name: ";
                                                 cin.getline(updated_anime_name, 100);
                                                 strcpy(al.anime_name, updated_anime_name);
                                                 break;
                                         case 2: 
                                                 if(al.completed == 'n'){
-                                                    cout<<"Have you finished watching the anime: ";
+                                                    cout<<" Have you finished watching the anime: ";
                                                     cin>>anime_completed;
                                                     al.completed = anime_completed;
                                                     if(al.completed == 'n'){
-                                                        cout<<"Enter recent episode watched: ";
+                                                        cout<<" Enter recent episode watched: ";
                                                         cin>>updated_episode;
                                                         al.recent_ep_watched = updated_episode;
                                                     }
@@ -104,21 +107,21 @@ int main(){
                                                 break;
                                         case 3: 
                                                 if(al.manga == 'y'){
-                                                    cout<<"Enter recent manga chapter read: ";
+                                                    cout<<" Enter recent manga chapter read: ";
                                                     cin>>updated_manga_chap;
                                                     al.recent_chap_read = updated_manga_chap;
                                                 }
                                                 else if(al.manga == 'n'){
-                                                    cout<<"Enter manga read status: ";
+                                                    cout<<" Enter manga read status: ";
                                                     cin>>updated_manga_status;
                                                     al.manga = updated_manga_status;
                                                     if(updated_manga_status == 'y'){
-                                                        cout<<"Enter recent manga chapter read: ";
+                                                        cout<<" Enter recent manga chapter read: ";
                                                         cin>>updated_manga_chap;
                                                         al.recent_chap_read = updated_manga_chap;
                                                     }
                                                 }
-                                                break;
+                                                break;   
                                     }
                                 }while(choice != 4);
 
@@ -133,35 +136,39 @@ int main(){
                             }
                         }
                         if(!flag){
-                                cout<<"Record not found!";
+                                cout<<"RECORD NOT FOUND!";
                                 return 1;
                         }
                     fi.close();
                     remove("anime.dat");
                     rename("update.dat", "anime.dat");
+                    cout<<"\n<----Exit---->";
                     break;
 
             case 3:
+                    cout<<"\n<----Display---->";
                     flag = 0;
                     fi.open("anime.dat", ios::in | ios::binary);
                     if(!fi){
-                        cout<<"\nError in opening the file!";
+                        cout<<"\nERROR OCCURED WHILE OPENING THE FILE!";
                         return 1;
                     }
                     while(fi.read((char*)&al, sizeof(Anime_list))){
-                        cout<<"\n-----------------------------------\n";
-                        cout<<"Anime name: "<<al.anime_name<<endl;
-                        cout<<"Anime completed: "<<al.completed<<endl;
+                        cout<<"\n------------------------------------------------------------------\n\n";
+                        cout<<"\tAnime name: "<<al.anime_name<<endl;
+                        cout<<"\tAnime completed: "<<al.completed<<endl;
                         if(al.completed == 'n')
-                            cout<<"Recent episode watched: "<<al.recent_ep_watched<<endl;
-                        cout<<"Manga read: "<<al.manga<<endl;
+                            cout<<"\tRecent episode watched: "<<al.recent_ep_watched<<endl;
+                        cout<<"\tManga read: "<<al.manga<<endl;
                         if(al.manga == 'y')
-                            cout<<"Recent manga chapter read: "<<al.recent_chap_read<<endl;
+                            cout<<"\tRecent manga chapter read: "<<al.recent_chap_read<<endl;
                     }
                     fi.close();
+                    cout<<"\n<----Exit---->";
                     break;
 
             case 4: 
+                    cout<<"\n<----Delete---->";
                     cout<<"\nAre you sure you want to delete an anime from the list (y/n): ";
                     cin>>del;
                     cin.clear();
@@ -178,7 +185,7 @@ int main(){
                             while(fi.read((char*)&al, sizeof(al))){
                                 if(strcmp(al.anime_name, to_be_deleted) == 0){
                                     flag = 1;
-                                    cout<<"\nAnime removed from the list";
+                                    cout<<"\nAnime removed from the list"<<endl;
                                 }
                                 else{
                                     fo.open("delete.dat", ios::out | ios::binary | ios::app);
@@ -187,16 +194,24 @@ int main(){
                                 }
                             }
                             if(!flag){
-                                cout<<"\n Record not found!";
+                                cout<<"\n RECORD NOT FOUND!";
                                 remove("delete.dat");
                                 return 1;
                             }
                             fi.close();
                             remove("anime.dat");
                             rename("delete.dat", "anime.dat");
-                    }                
-                    break;    
+                    }
+                    cout<<"\n<----Exit---->";                
+                    break;
+            case 5: 
+                    cout<<".\n.\nExiting anime binary\n\n";
+                    return 1; 
+            default: 
+                    cout<<"\nINVALID COMMAND\n";
+                    break;
+                       
         }
-    }while(ch != 5);
+    }while(ch != 6);
 return 0;
 }
