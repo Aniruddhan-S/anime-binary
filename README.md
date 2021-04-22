@@ -10,7 +10,7 @@ As of now it can:
   - delete an anime
 
 
-# A little insight on why i did this:
+# A little insight on why i did this
 
 It has been long since i used C++, so i thought i'd do something simple in it, just to keep in touch with the language. 
 
