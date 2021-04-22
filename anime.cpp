@@ -290,3 +290,11 @@ int add_manga(){
     }
 return 0;
 }
+
+int display_manga(){
+    while(fi.read((char*)&ml, sizeof(ml))){
+        cout<<"\n\n---------------------------------------------------------\n\n";
+        cout<<"\nManga Read ..........."<<ml.manga<<endl;         	
+    }
+return 0;
+}
