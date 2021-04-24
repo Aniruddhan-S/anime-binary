@@ -5,7 +5,7 @@
 using namespace std;
 
 int add_anime(), update_anime(), display_anime(), delete_anime();
-int add_manga();
+int add_manga(), update_manga(), display_manga(), delete_manga();
 
 struct Anime_list{
     char anime_name[100];
@@ -15,7 +15,7 @@ struct Anime_list{
 }al;
 
 struct Manga_list{
-    char manga;
+    char manga_name[100];
     char finished;
     int recent_chap_read;
 }ml;
@@ -32,6 +32,9 @@ int main(){
         cout<<"\n1. Anime \n2. Manga \nEnter your choice: ";
         cin>>AnimeOrManga;
         switch(AnimeOrManga){
+
+            // Anime commands
+            
                 case 1: 
                         do{
                             cout<<"\n1. Add \n2. Modify \n3. Display \n4. Delete \n5. Exit \nEnter your choice: ";
@@ -66,7 +69,7 @@ int main(){
                                         cout<<"\nEnter the name of the anime to be modified: ";
                                         cin.getline(to_be_updated, 100);
 
-                                            while(fi.read((char*)&al, sizeof(al))){
+                                            while(fi.read((char*)&al, sizeof(Anime_list))){
                                                 if(strcmp(al.anime_name, to_be_updated) == 0){
                                                     flag = 1;
                                                     
@@ -77,7 +80,6 @@ int main(){
                                                     fo.close();
                                                 }
                                                 else{
-
                                                     fo.open("update.dat", ios::out | ios::binary | ios::app);
                                                     fo.write((char*)&al, sizeof(Anime_list));
                                                     fo.close();
@@ -137,7 +139,7 @@ int main(){
                                 
                                 case 5: 
                                         cout<<".\n.\nExiting anime binary\n\n";
-                                        return 1; 
+                                        break; 
 
                                 default: 
                                         cout<<"\nINVALID COMMAND\n";
@@ -147,7 +149,116 @@ int main(){
                         }while(ch != 6);
                         break;
 
-                case 2:break;
+            // Manga commands
+                
+                case 2:
+                        do{
+                            cout<<"\n1. Add \n2. Update \n3. Display \n4. Delete \n5. Exit \nEnter your choice: ";
+                            cin>>ch;
+                            cin.clear();
+                            cin.sync();
+                            switch(ch){
+                                case 1: 
+                                        cout<<"\n<----Add---->";
+                                        fo.open("manga.dat", ios::out | ios::binary | ios::app);
+
+                                        add_manga();   
+                                        
+                                        cout<<"\nWriting into binary file..."<<endl;
+                                        fo.write((char*)&ml, sizeof(Manga_list));
+                                        fo.close();
+
+                                        if(!fo.good()){
+                                            cout<<"\nERROR OCCURED AT THE TIME OF WRITING!";
+                                            return 1;
+                                        }
+                                        cout<<"\n<----Exit---->";
+                                        break;
+                                case 2: 
+                                        flag = 0;
+                                        fi.open("manga.dat", ios::in | ios::binary);
+                                        if(!fi){
+                                            cout<<"\nERROR OCCURED WHILE OPENING THE FILE!";
+                                            return 1;
+                                        }
+                                        cout<<"\n<----Modify---->";
+                                        cout<<"\nEnter the name of the manga to be modified: ";
+                                        cin.getline(to_be_updated, 100);
+
+                                            while(fi.read((char*)&ml, sizeof(Manga_list))){
+                                                if(strcmp(ml.manga_name, to_be_updated) == 0){
+                                                    flag = 1;
+                                                    
+                                                    update_manga();
+
+                                                    fo.open("update.dat", ios::out | ios::binary | ios::app);
+                                                    fo.write((char*)&ml, sizeof(Manga_list));
+                                                    fo.close();
+                                                }
+                                                else{
+                                                    fo.open("update.dat", ios::out | ios::binary | ios::app);
+                                                    fo.write((char*)&ml, sizeof(Manga_list));
+                                                    fo.close();
+                                                }
+                                            }
+                                            if(!flag){
+                                                    cout<<"\nRECORD NOT FOUND!\n";
+                                                    remove("update.dat");
+                                                    break;
+                                            }
+                                        fi.close();
+                                        remove("manga.dat");
+                                        rename("update.dat", "manga.dat");
+                                        cout<<"\n<----Exit---->";
+                                        break;
+                                case 3:
+                                        fi.open("manga.dat", ios::in | ios::binary);
+                                        if(!fi){
+                                            cout<<"\nERROR OCCURED WHILE OPENING THE FILE!";
+                                            return 1;
+                                        }
+                                        cout<<"\n<----Display---->";
+
+                                        display_manga();
+                                        
+                                        cout<<"\n<----Exit---->";
+                                        fi.close();
+                                        break;
+                                case 4:
+                                        cout<<"\n<----Delete---->";
+                                        cout<<"\nAre you sure you want to delete a manga from the list (y/n): ";
+                                        cin>>del;
+                                        cin.clear();
+                                        cin.sync();
+                                        if(del == 'y'){
+                                            fi.open("manga.dat", ios::in | ios::binary);
+                                            if(!fi){
+                                                cout<<"\nError in opening the file!";
+                                                return 1;
+                                            } 
+
+                                            delete_manga();
+
+                                            if(!flag){
+                                                cout<<"\n RECORD NOT FOUND!\n";
+                                                remove("delete.dat");
+                                                break;
+                                            }
+                                            fi.close();
+                                            remove("manga.dat");
+                                            rename("delete.dat", "manga.dat");
+                                        }
+                                        cout<<"\n<----Exit---->";                
+                                        break;
+                                case 5: 
+                                        cout<<".\n.\nExiting manga binary";
+                                        break;
+                                
+                                default:
+                                        cout<<"\nINVALID COMMAND";         
+                            }
+                        }while(ch != 6);
+                        break;
         }
     }while(AnimeOrManga != 3);
 return 0;
@@ -207,26 +318,9 @@ int update_anime(){
                             al.recent_ep_watched = updated_episode;
                         }
                     }
-                    break;
-                    // case 3: 
-                    //         if(al.manga == 'y'){
-                    //             cout<<" Enter recent manga chapter read: ";
-                    //             cin>>updated_manga_chap;
-                    //             al.recent_chap_read = updated_manga_chap;
-                    //         }
-                    //         else if(al.manga == 'n'){
-                    //             cout<<" Enter manga read status: ";
-                    //             cin>>updated_manga_status;
-                    //             al.manga = updated_manga_status;
-                    //             if(updated_manga_status == 'y'){
-                    //                 cout<<" Enter recent manga chapter read: ";
-                    //                 cin>>updated_manga_chap;
-                    //                 al.recent_chap_read = updated_manga_chap;
-                    //             }
-                    //         }
-                    //         break;   
-                    }
-                }while(choice != 3);
+                    break;   
+            }
+    }while(choice != 3);
 return 0;
 }
 
@@ -240,9 +334,6 @@ int display_anime(){
             cout<<"\tSeason ..................... "<<al.season<<endl;
             cout<<"\tRecent episode watched ..... "<<al.recent_ep_watched<<endl;
         }
-        // cout<<"\tManga read ................. "<<al.manga<<endl;
-        // if(al.manga == 'y')
-        //     cout<<"\tRecent manga chapter read .. "<<al.recent_chap_read<<endl;
     }
 return 0;
 }
@@ -254,7 +345,7 @@ int delete_anime(){
     cout<<"\nEnter the name of the anime to be deleted: ";
     cin.getline(to_be_deleted, 100);
 
-        while(fi.read((char*)&al, sizeof(al))){
+        while(fi.read((char*)&al, sizeof(Anime_list))){
             if(strcmp(al.anime_name, to_be_deleted) == 0){
                 flag = 1;
                 cout<<"\nAnime removed from the list"<<endl;
@@ -271,22 +362,84 @@ return 0;
 // manga user defined functions
 
 int add_manga(){
-    char mng;
+    char mng[100], fin;
     int mng_chap;
 
-    fo.open("manga.dat", ios::out | ios::binary | ios::app);
-
-    cout<<" Have you read the manga (y/n): ";
+    cout<<"\n Enter the manga name: ";
     cin>>mng;
-    ml.manga = mng;
-
-    if(mng == 'y'){
+    strcpy(ml.manga_name, mng);
+    cout<<" Have you completed reading the manga (y/n): ";
+    cin>>fin;
+    ml.finished = fin;
+    if(fin == 'n'){
         cout<<" Enter recent manga chapter read: ";
         cin>>mng_chap;
         ml.recent_chap_read = mng_chap;
     }
-    else if(mng == 'n'){
-        ml.recent_chap_read = 0;
+return 0;
+}
+
+int update_manga(){
+    char manga_finished, updated_manga_name[100];
+    int choice, updated_chap;
+    
+    do{
+        cout<<"\nWhat is to be updated? \n1. Manga name \n2. Episodes \n3. Exit\nEnter your choice: ";
+        cin>>choice;
+        cin.clear();
+        cin.sync();
+        switch(choice){
+            case 1:
+                    cout<<" Enter new manga name: ";
+                    cin.getline(updated_manga_name, 100);
+                    strcpy(ml.manga_name, updated_manga_name);
+                    break;
+            case 2: 
+                    if(ml.finished == 'n'){
+                        cout<<" Have you completed the manga (y/n): ";
+                        cin>>manga_finished;
+                        ml.finished = manga_finished;
+                        if(ml.finished == 'n'){
+                            cout<<" Enter the recent chapter read: ";
+                            cin>>updated_chap;
+                            ml.recent_chap_read = updated_chap;
+                        }
+                    }
+                    break;
+        }
+    }while(choice != 3);
+return 0;
+}
+
+int display_manga(){
+
+    while(fi.read((char*)&ml, sizeof(Manga_list))){
+        cout<<"\n------------------------------------------------------------------\n\n";
+        cout<<"\tManga name ................. "<<ml.manga_name<<endl;
+        cout<<"\tManga completed: ........... "<<ml.finished<<endl;
+        if(ml.finished == 'n')
+            cout<<"\tRecent manga chapter read .. "<<ml.recent_chap_read<<endl;
     }
+return 0;
+}
+
+int delete_manga(){
+    char to_be_deleted[100];
+    flag = 0;
+
+    cout<<"\nEnter the name of the manga to be deleted: ";
+    cin.getline(to_be_deleted, 100);
+
+        while(fi.read((char*)&ml, sizeof(Manga_list))){
+            if(strcmp(ml.manga_name, to_be_deleted) == 0){
+                flag = 1;
+                cout<<"\nManga removed from the list"<<endl;
+            }
+            else{ 
+                fo.open("delete.dat", ios::out | ios::binary | ios::app);
+                fo.write((char*)&ml, sizeof(Manga_list));
+                fo.close();
+            }
+        }
 return 0;
 }
