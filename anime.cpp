@@ -423,7 +423,6 @@ int display_manga(){
 return 0;
 }
 
-<<<<<<< HEAD
 int delete_manga(){
     char to_be_deleted[100];
     flag = 0;
@@ -444,12 +443,3 @@ int delete_manga(){
         }
 return 0;
 }
-=======
-int display_manga(){
-    while(fi.read((char*)&ml, sizeof(ml))){
-        cout<<"\n\n---------------------------------------------------------\n\n";
-        cout<<"\nManga Read ..........."<<ml.manga<<endl;         	
-    }
-return 0;
-}
->>>>>>> 4bff23181fa4e157fbaf8d7989db6a54513aa7f5
