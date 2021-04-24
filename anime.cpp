@@ -138,8 +138,8 @@ int main(){
                                         break;
                                 
                                 case 5: 
-                                        cout<<".\n.\nExiting anime binary\n\n";
-                                        break; 
+                                        cout<<".\n.\nExiting program\n\n";
+                                        return 1; 
 
                                 default: 
                                         cout<<"\nINVALID COMMAND\n";
@@ -251,11 +251,11 @@ int main(){
                                         cout<<"\n<----Exit---->";                
                                         break;
                                 case 5: 
-                                        cout<<".\n.\nExiting manga binary";
-                                        break;
+                                        cout<<".\n.\nExiting program\n\n";
+                                        return 1;
                                 
                                 default:
-                                        cout<<"\nINVALID COMMAND";         
+                                        cout<<"\nINVALID COMMAND\n";         
                             }
                         }while(ch != 6);
                         break;
@@ -290,7 +290,7 @@ return 0;
 
 int update_anime(){
     int choice, updated_episode, updated_anime_season;
-    char anime_completed, updated_anime_name[100];
+    char anime_completed, y_n, updated_anime_name[100];
     
     do{
         cout<<"\nWhat is to be updated? \n1. Anime name \n2. Episodes \n3. Exit";
@@ -311,6 +311,21 @@ int update_anime(){
                         al.completed = anime_completed;
                         if(al.completed == 'n'){
                             cout<<" Enter the season: ";
+                            cin>>updated_anime_season;
+                            al.season = updated_anime_season;
+                            cout<<" Enter recent episode watched: ";
+                            cin>>updated_episode;
+                            al.recent_ep_watched = updated_episode;
+                        }
+                    }
+                    else if(al.completed == 'y'){
+                        cout<<" You have already completed watching the anime, contuining will set anime completed to 'no'";
+                        cout<<"\nDo you want to continue? (y/n): ";
+                        cin>>y_n;
+                        if(y_n == 'y'){
+                            al.completed = 'n';
+                            cout<<"\n Anime completed status set to 'no'";
+                            cout<<"\n Enter then season: ";
                             cin>>updated_anime_season;
                             al.season = updated_anime_season;
                             cout<<" Enter recent episode watched: ";
@@ -342,13 +357,13 @@ int delete_anime(){
     char to_be_deleted[100];
     flag = 0;
 
-    cout<<"\nEnter the name of the anime to be deleted: ";
+    cout<<"\n Enter the name of the anime to be deleted: ";
     cin.getline(to_be_deleted, 100);
 
         while(fi.read((char*)&al, sizeof(Anime_list))){
             if(strcmp(al.anime_name, to_be_deleted) == 0){
                 flag = 1;
-                cout<<"\nAnime removed from the list"<<endl;
+                cout<<"\n Anime removed from the list"<<endl;
             }
             else{ 
                 fo.open("delete.dat", ios::out | ios::binary | ios::app);
@@ -380,7 +395,7 @@ return 0;
 }
 
 int update_manga(){
-    char manga_finished, updated_manga_name[100];
+    char manga_finished, y_n, updated_manga_name[100];
     int choice, updated_chap;
     
     do{
@@ -401,6 +416,18 @@ int update_manga(){
                         ml.finished = manga_finished;
                         if(ml.finished == 'n'){
                             cout<<" Enter the recent chapter read: ";
+                            cin>>updated_chap;
+                            ml.recent_chap_read = updated_chap;
+                        }
+                    }
+                    else if(ml.finished == 'y'){
+                        cout<<" You have already completed reading the manga, contuining will set manga completed to 'no'";
+                        cout<<"\n  Do you want to continue? (y/n): ";
+                        cin>>y_n;
+                        if(y_n == 'y'){
+                            ml.finished = 'n';
+                            cout<<"\n Manga completed status set to 'no'";
+                            cout<<"\n Enter the recent chapter read: ";
                             cin>>updated_chap;
                             ml.recent_chap_read = updated_chap;
                         }
