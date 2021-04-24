@@ -4,7 +4,7 @@
 This is a simple C++ binary file handling program, to keep track of the anime that i've watched and that i'm watching.
 
 As of now it can:
-  Anime:
+  - Anime:
     - add
       - anime name
       - anime completed
@@ -13,7 +13,7 @@ As of now it can:
     - display 
     - delete 
 
-  Manga:
+  - Manga:
     - add
       - manga name
       - manga completed
