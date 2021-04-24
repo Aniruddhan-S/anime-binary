@@ -5,9 +5,8 @@
 using namespace std;
 
 int add_anime(), update_anime(), display_anime(), delete_anime();
-int add_manga(), update_manga(), display_manga(), delete_manga();
-int clear(); 
-//void error(const char* message[100]);
+int add_manga(), update_manga(), display_manga(), delete_manga(); 
+void success(string success), error(string error), clear();
 
 struct Anime_list{
     char anime_name[100];
@@ -52,13 +51,17 @@ int main(){
 
                                         add_anime();   
                                         
-                                        cout<<"\nWriting into binary file..."<<endl;
+                                        cout<<"\n Writing into binary file\n";
                                         fo.write((char*)&al, sizeof(Anime_list));
                                         fo.close();
 
                                         if(!fo.good()){
-                                            cout<<"\033[31;1m Error occured at the time of writing\033[0m";
+                                            //cout<<"\033[31;1m Error occured at the time of writing\033[0m";
+                                            error("Error occured at the time of writing");
                                             return 1;
+                                        }
+                                        else if(fo.good()){
+                                            success("Data entry successful");
                                         }
                                         cout<<"\n<----Exit---->";
                                         break;
@@ -68,7 +71,8 @@ int main(){
                                         flag = 0;
                                         fi.open("anime.dat", ios::in | ios::binary);
                                         if(!fi){
-                                            cout<<"\033[31;1m Error occured at the time of opening the file\033[0m";
+                                            //cout<<"\033[31;1m Error occured at the time of opening the file\033[0m";
+                                            error("Error occured while opening the file");
                                             return 1;
                                         }
                                         cout<<"\n<----Modify---->";
@@ -91,8 +95,15 @@ int main(){
                                                     fo.close();
                                                 }
                                             }
+                                            if(!fo.good()){
+                                                error("Error occured at the time of writing");
+                                            }
+                                            else if(fo.good()){
+                                                success("Data updation successful");
+                                            }
                                             if(!flag){
-                                                    cout<<"\033[31;1m Record not found\033[0m";
+                                                    //cout<<"\033[31;1m Record not found\033[0m";
+                                                    error("Record not found");
                                                     remove("update.dat");
                                                     fi.close();
                                                     break;
@@ -107,7 +118,8 @@ int main(){
                                         clear();
                                         fi.open("anime.dat", ios::in | ios::binary);
                                         if(!fi){
-                                            cout<<"\033[31;1m Error occured at the time of opening the file\033[0m";
+                                            //cout<<"\033[31;1m Error occured at the time of opening the file\033[0m";
+                                            error("Error occured while opening the file");
                                             return 1;
                                         }
                                         cout<<"\n<----Display---->";
@@ -128,17 +140,22 @@ int main(){
                                         if(del == 'y'){
                                             fi.open("anime.dat", ios::in | ios::binary);
                                             if(!fi){
-                                                cout<<"\033[31;1m Error occured in oprning the file\033[0m";
+                                                //cout<<"\033[31;1m Error occured in oprning the file\033[0m";
+                                                error("Error occured while opening the file");
                                                 return 1;
                                             } 
 
                                             delete_anime();
 
                                             if(!flag){
-                                                cout<<"\033[31;1m Record not found\033[0m";
+                                                //cout<<"\033[31;1m Record not found\033[0m";
+                                                error("Record not found");
                                                 remove("delete.dat");
                                                 fi.close();
                                                 break;
+                                            }
+                                            else{
+                                                success("Anime removed from the list");
                                             }
                                             fi.close();
                                             remove("anime.dat");
@@ -152,7 +169,8 @@ int main(){
                                         return 1; 
 
                                 default: 
-                                        cout<<"\033[31;1m Invalid command\033[0m";
+                                        //cout<<"\033[31;1m Invalid command\033[0m";
+                                        error("Invalid command");
                                         break;
                                         
                             }
@@ -163,7 +181,6 @@ int main(){
                 
                 case 2:
                         do{
-                            clear();
                             cout<<"\n1. Add \n2. Update \n3. Display \n4. Delete \n5. Exit \nEnter your choice: ";
                             cin>>ch;
                             cin.clear();
@@ -176,13 +193,17 @@ int main(){
 
                                         add_manga();   
                                         
-                                        cout<<"\nWriting into binary file..."<<endl;
+                                        cout<<"\n Writing into binary file\n";
                                         fo.write((char*)&ml, sizeof(Manga_list));
                                         fo.close();
 
                                         if(!fo.good()){
-                                            cout<<"\033[31;1m Error occured at the time of writing\033[0m";
+                                            //cout<<"\033[31;1m Error occured at the time of writing\033[0m";
+                                            error("Error occured at the time of writing");
                                             return 1;
+                                        }
+                                        else if(fo.good()){
+                                            success("Data entry sucessful");
                                         }
                                         cout<<"\n<----Exit---->";
                                         break;
@@ -191,7 +212,8 @@ int main(){
                                         flag = 0;
                                         fi.open("manga.dat", ios::in | ios::binary);
                                         if(!fi){
-                                            cout<<"\033[31;1m Error occured while opening the file\033[0m";
+                                            //cout<<"\033[31;1m Error occured while opening the file\033[0m";
+                                            error("Error occured while opening the file");                                            
                                             return 1;
                                         }
                                         cout<<"\n<----Modify---->";
@@ -214,8 +236,16 @@ int main(){
                                                     fo.close();
                                                 }
                                             }
+                                            if(!fo.good()){
+                                                error("Error occured at the time of writing");
+                                                return 1;
+                                            }
+                                            else if(fo.good()){
+                                                success("Data updation successful");
+                                            }
                                             if(!flag){
-                                                    cout<<"\033[31;1m Record not found\033[0m";
+                                                    //cout<<"\033[31;1m Record not found\033[0m";
+                                                    error("Record not found");
                                                     remove("update.dat");
                                                     fi.close();
                                                     break;
@@ -229,7 +259,8 @@ int main(){
                                         clear();
                                         fi.open("manga.dat", ios::in | ios::binary);
                                         if(!fi){
-                                            cout<<"\033[31;1m Error occured while opening the file\033[0m";
+                                            //cout<<"\033[31;1m Error occured while opening the file\033[0m";
+                                            error("Error occured while opening the file");
                                             return 1;
                                         }
                                         cout<<"\n<----Display---->";
@@ -249,17 +280,22 @@ int main(){
                                         if(del == 'y'){
                                             fi.open("manga.dat", ios::in | ios::binary);
                                             if(!fi){
-                                                cout<<"\033[31;1m Error occured while opening the file\033[0m";
+                                                //cout<<"\033[31;1m Error occured while opening the file\033[0m";
+                                                error("Error occured while opening the file");
                                                 return 1;
                                             } 
 
                                             delete_manga();
 
                                             if(!flag){
-                                                cout<<"\033[31;1;4m Record not found\033[0m";
+                                                //cout<<"\033[31;1;4m Record not found\033[0m";
+                                                error("Record not found");
                                                 remove("delete.dat");
                                                 fi.close();
                                                 break;
+                                            }
+                                            else{
+                                                success("Manga removed from the list");
                                             }
                                             fi.close();
                                             remove("manga.dat");
@@ -272,7 +308,8 @@ int main(){
                                         return 1;
                                 
                                 default:
-                                        cout<<"\033[31;1m Invalid Command\033[0m";   
+                                        //cout<<"\033[31;1m Invalid Command\033[0m";  
+                                        error("Invalid Command");
                                         break;      
                             }
                         }while(ch != 6);
@@ -281,8 +318,7 @@ int main(){
                 case 3: return 1;
                 
                 default: 
-                        cout<<"\033[31;1m Invalid Command\033[0m";
-                        //error("InvalidCommand");
+                        error("Invalid Command");
                         break;
         }
     }while(AnimeOrManga != 4);
@@ -345,7 +381,7 @@ int update_anime(){
                     }
                     else if(al.completed == 'y'){
                         cout<<" You have already completed watching the anime, contuining will set anime completed to 'no'";
-                        cout<<"\nDo you want to continue? (y/n): ";
+                        cout<<"\n Do you want to continue? (y/n): ";
                         cin>>y_n;
                         if(y_n == 'y'){
                             al.completed = 'n';
@@ -388,7 +424,7 @@ int delete_anime(){
         while(fi.read((char*)&al, sizeof(Anime_list))){
             if(strcmp(al.anime_name, to_be_deleted) == 0){
                 flag = 1;
-                cout<<"\033[32;1m Anime removed from the list\033[0m";
+                //success("Anime removed from the list");
             }
             else{ 
                 fo.open("delete.dat", ios::out | ios::binary | ios::app);
@@ -447,7 +483,7 @@ int update_manga(){
                     }
                     else if(ml.finished == 'y'){
                         cout<<" You have already completed reading the manga, contuining will set manga completed to 'no'";
-                        cout<<"\n  Do you want to continue? (y/n): ";
+                        cout<<"\n Do you want to continue? (y/n): ";
                         cin>>y_n;
                         if(y_n == 'y'){
                             ml.finished = 'n';
@@ -479,13 +515,13 @@ int delete_manga(){
     char to_be_deleted[100];
     flag = 0;
 
-    cout<<"\nEnter the name of the manga to be deleted: ";
+    cout<<"\n Enter the name of the manga to be deleted: ";
     cin.getline(to_be_deleted, 100);
 
         while(fi.read((char*)&ml, sizeof(Manga_list))){
             if(strcmp(ml.manga_name, to_be_deleted) == 0){
                 flag = 1;
-                cout<<"\033[32;1m Manga removed from the list\033[0m";
+                //success("Manga removed from the list");
             }
             else{ 
                 fo.open("delete.dat", ios::out | ios::binary | ios::app);
@@ -498,16 +534,14 @@ return 0;
 
 // miscellaneous functions
 
-int clear(){
+void clear(){
     cout<<"\x1B[2J\x1B[H";
-return 0;
 }
 
-// void error(const char* message[100]){
-//     char prefix[100], postfix[100];
-//     strcpy(prefix, "\033[31;1;4m");
-//     strcpy(postfix, "\033[0m");
-//     strcat(prefix, message);
-//     strcat(prefix,postfix);
-//     cout<<prefix;
-// }
+void error(string error){
+    cout<<"\033[31;1;4m " + error + "\033[0m";
+}
+
+void success(string success){
+    cout<<"\033[32;1m " + success + "\033[0m";
+}
