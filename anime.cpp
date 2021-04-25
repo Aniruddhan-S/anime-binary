@@ -7,6 +7,8 @@ using namespace std;
 int add_anime(), update_anime(), display_anime(), delete_anime();
 int add_manga(), update_manga(), display_manga(), delete_manga(); 
 void success(string success), error(string error), clear();
+char* strip(char *name);
+int check(char *Aname);
 
 struct Anime_list{
     char anime_name[100];
@@ -27,7 +29,7 @@ int flag = 0;
 
 int main(){
 
-    char to_be_updated[100], updated_manga_status, del;
+    char to_be_updated[100], updated_manga_status, del, existing_anime_name[100], name_to_check[100];
     int ch, updated_manga_chap, AnimeOrManga;
     do{
         cout<<"\n1. Anime \n2. Manga \n3. Exit \nEnter your choice: ";
@@ -49,11 +51,16 @@ int main(){
                                         cout<<"\n<----Add---->";
                                         fo.open("anime.dat", ios::out | ios::binary | ios::app);
 
-                                        add_anime();   
-                                        
-                                        cout<<"\n Writing into binary file\n";
-                                        fo.write((char*)&al, sizeof(Anime_list));
-                                        fo.close();
+                                        //add_anime(); 
+                                        if(add_anime() == 1){
+                                            fo.close();
+                                            break;
+                                        }  
+                                        else{
+                                            cout<<"\n Writing into binary file\n";
+                                            fo.write((char*)&al, sizeof(Anime_list));
+                                            fo.close();
+                                        }
 
                                         if(!fo.good()){
                                             //cout<<"\033[31;1m Error occured at the time of writing\033[0m";
@@ -70,6 +77,7 @@ int main(){
                                         clear();
                                         flag = 0;
                                         fi.open("anime.dat", ios::in | ios::binary);
+                                        
                                         if(!fi){
                                             //cout<<"\033[31;1m Error occured at the time of opening the file\033[0m";
                                             error("Error occured while opening the file");
@@ -80,7 +88,10 @@ int main(){
                                         cin.getline(to_be_updated, 100);
 
                                             while(fi.read((char*)&al, sizeof(Anime_list))){
-                                                if(strcmp(al.anime_name, to_be_updated) == 0){
+                                                strcpy(existing_anime_name, al.anime_name);
+                                                strcpy(name_to_check, to_be_updated);
+                                                
+                                                if(strcmpi(strip(existing_anime_name), strip(name_to_check)) == 0){
                                                     flag = 1;
                                                     
                                                     update_anime();
@@ -117,6 +128,7 @@ int main(){
                                 case 3:
                                         clear();
                                         fi.open("anime.dat", ios::in | ios::binary);
+                                        
                                         if(!fi){
                                             //cout<<"\033[31;1m Error occured at the time of opening the file\033[0m";
                                             error("Error occured while opening the file");
@@ -137,8 +149,10 @@ int main(){
                                         cin>>del;
                                         cin.clear();
                                         cin.sync();
+                                       
                                         if(del == 'y'){
                                             fi.open("anime.dat", ios::in | ios::binary);
+                                            
                                             if(!fi){
                                                 //cout<<"\033[31;1m Error occured in oprning the file\033[0m";
                                                 error("Error occured while opening the file");
@@ -196,7 +210,7 @@ int main(){
                                         cout<<"\n Writing into binary file\n";
                                         fo.write((char*)&ml, sizeof(Manga_list));
                                         fo.close();
-
+                                        
                                         if(!fo.good()){
                                             //cout<<"\033[31;1m Error occured at the time of writing\033[0m";
                                             error("Error occured at the time of writing");
@@ -207,10 +221,12 @@ int main(){
                                         }
                                         cout<<"\n<----Exit---->";
                                         break;
+                                
                                 case 2: 
                                         clear();
                                         flag = 0;
                                         fi.open("manga.dat", ios::in | ios::binary);
+                                        
                                         if(!fi){
                                             //cout<<"\033[31;1m Error occured while opening the file\033[0m";
                                             error("Error occured while opening the file");                                            
@@ -255,9 +271,11 @@ int main(){
                                         rename("update.dat", "manga.dat");
                                         cout<<"\n<----Exit---->";
                                         break;
+                                
                                 case 3:
                                         clear();
                                         fi.open("manga.dat", ios::in | ios::binary);
+                                        
                                         if(!fi){
                                             //cout<<"\033[31;1m Error occured while opening the file\033[0m";
                                             error("Error occured while opening the file");
@@ -270,6 +288,7 @@ int main(){
                                         cout<<"\n<----Exit---->";
                                         fi.close();
                                         break;
+                                
                                 case 4:
                                         clear();
                                         cout<<"\n<----Delete---->";
@@ -277,6 +296,7 @@ int main(){
                                         cin>>del;
                                         cin.clear();
                                         cin.sync();
+                                        
                                         if(del == 'y'){
                                             fi.open("manga.dat", ios::in | ios::binary);
                                             if(!fi){
@@ -303,6 +323,7 @@ int main(){
                                         }
                                         cout<<"\n<----Exit---->";                
                                         break;
+                               
                                 case 5: 
                                         cout<<".\n.\nExiting program\n\n";
                                         return 1;
@@ -333,8 +354,13 @@ int add_anime(){
 
     cout<<"\n Anime name: ";
     cin.getline(name, 100);
+
+    if(check(name) == 1)
+        return 1;
+    
     strcpy(al.anime_name, name);
-    cout<<" Have you completed the anime (y/n): ";
+    
+    cout<<"\n Have you completed the anime (y/n): ";
     cin>>anime_completed;
     al.completed = anime_completed;
                     
@@ -342,6 +368,7 @@ int add_anime(){
         cout<<" Enter the season: ";
         cin>>anime_season;
         al.season = anime_season;
+        
         cout<<" Enter the recent episode watched: ";
         cin>>ep;
         al.recent_ep_watched = ep;
@@ -370,10 +397,12 @@ int update_anime(){
                         cout<<" Have you finished watching the anime: ";
                         cin>>anime_completed;
                         al.completed = anime_completed;
+                        
                         if(al.completed == 'n'){
                             cout<<" Enter the season: ";
                             cin>>updated_anime_season;
                             al.season = updated_anime_season;
+                            
                             cout<<" Enter recent episode watched: ";
                             cin>>updated_episode;
                             al.recent_ep_watched = updated_episode;
@@ -386,9 +415,11 @@ int update_anime(){
                         if(y_n == 'y'){
                             al.completed = 'n';
                             cout<<"\n Anime completed status set to 'no'";
+                            
                             cout<<"\n Enter then season: ";
                             cin>>updated_anime_season;
                             al.season = updated_anime_season;
+                            
                             cout<<" Enter recent episode watched: ";
                             cin>>updated_episode;
                             al.recent_ep_watched = updated_episode;
@@ -415,14 +446,17 @@ return 0;
 }
 
 int delete_anime(){
-    char to_be_deleted[100];
+    char to_be_deleted[100], original[100];
     flag = 0;
 
     cout<<"\n Enter the name of the anime to be deleted: ";
     cin.getline(to_be_deleted, 100);
 
         while(fi.read((char*)&al, sizeof(Anime_list))){
-            if(strcmp(al.anime_name, to_be_deleted) == 0){
+            
+            strcpy(original, al.anime_name);
+            
+            if(strcmpi(strip(original), strip(to_be_deleted)) == 0){
                 flag = 1;
                 //success("Anime removed from the list");
             }
@@ -442,11 +476,13 @@ int add_manga(){
     int mng_chap;
 
     cout<<"\n Enter the manga name: ";
-    cin>>mng;
+    cin.getline(mng, 100);
     strcpy(ml.manga_name, mng);
+    
     cout<<" Have you completed reading the manga (y/n): ";
     cin>>fin;
     ml.finished = fin;
+   
     if(fin == 'n'){
         cout<<" Enter recent manga chapter read: ";
         cin>>mng_chap;
@@ -475,6 +511,7 @@ int update_manga(){
                         cout<<" Have you completed the manga (y/n): ";
                         cin>>manga_finished;
                         ml.finished = manga_finished;
+                        
                         if(ml.finished == 'n'){
                             cout<<" Enter the recent chapter read: ";
                             cin>>updated_chap;
@@ -485,9 +522,11 @@ int update_manga(){
                         cout<<" You have already completed reading the manga, contuining will set manga completed to 'no'";
                         cout<<"\n Do you want to continue? (y/n): ";
                         cin>>y_n;
+                        
                         if(y_n == 'y'){
                             ml.finished = 'n';
                             cout<<"\n Manga completed status set to 'no'";
+                            
                             cout<<"\n Enter the recent chapter read: ";
                             cin>>updated_chap;
                             ml.recent_chap_read = updated_chap;
@@ -539,9 +578,46 @@ void clear(){
 }
 
 void error(string error){
-    cout<<"\033[31;1;4m " + error + "\033[0m";
+    cout<<"\033[31;1m " + error + "\033[0m";
 }
 
 void success(string success){
     cout<<"\033[32;1m " + success + "\033[0m";
+}
+
+char* strip(char *name){
+    int i=0, chk, j;
+    
+    while(name[i]!='\0'){
+        chk=0;
+        if(name[i]==' '){
+            for(j=i; name[j-1]!='\0'; j++)
+                name[j] = name[j+1];
+            chk = 1;
+        }
+        if(chk==0)
+            i++;
+    }
+return name;
+}
+
+int check(char *Aname){
+    cout<<"\n Checking database for duplicates...";
+    char temp1[100], temp2[100];
+    
+    fi.open("anime.dat", ios::in | ios::binary);
+    while(fi.read((char*)&al, sizeof(Anime_list))){
+
+        strcpy(temp1, al.anime_name);
+        strcpy(temp2, Aname);
+
+        if(strcmpi(strip(temp1), strip(temp2)) == 0){
+            error("Anime already exists");
+            fi.close();
+            return 1;
+        }
+    }
+    cout<<"\n No duplicates found\n";
+    fi.close();
+return 0;
 }
