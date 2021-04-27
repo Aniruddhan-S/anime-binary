@@ -8,7 +8,7 @@ int add_anime(), update_anime(), display_anime(), delete_anime();
 int add_manga(), update_manga(), display_manga(), delete_manga(); 
 void success(string success), error(string error), clear();
 char* strip(char *name);
-int check(char *Aname);
+int anime_check(char *Aname), manga_check(char *Mname);
 
 struct Anime_list{
     char anime_name[100];
@@ -29,7 +29,7 @@ int flag = 0;
 
 int main(){
 
-    char to_be_updated[100], updated_manga_status, del, existing_anime_name[100], name_to_check[100];
+    char to_be_updated[100], updated_manga_status, del, existing_name[100], name_to_check[100]; 
     int ch, updated_manga_chap, AnimeOrManga;
     do{
         cout<<"\n1. Anime \n2. Manga \n3. Exit \nEnter your choice: ";
@@ -88,10 +88,10 @@ int main(){
                                         cin.getline(to_be_updated, 100);
 
                                             while(fi.read((char*)&al, sizeof(Anime_list))){
-                                                strcpy(existing_anime_name, al.anime_name);
+                                                strcpy(existing_name, al.anime_name);
                                                 strcpy(name_to_check, to_be_updated);
                                                 
-                                                if(strcmpi(strip(existing_anime_name), strip(name_to_check)) == 0){
+                                                if(strcmpi(strip(existing_name), strip(name_to_check)) == 0){
                                                     flag = 1;
                                                     
                                                     update_anime();
@@ -131,8 +131,8 @@ int main(){
                                         
                                         if(!fi){
                                             //cout<<"\033[31;1m Error occured at the time of opening the file\033[0m";
-                                            error("Error occured while opening the file");
-                                            return 1;
+                                            error("Error occured while opening the file / File does not exist");
+                                            break;
                                         }
                                         cout<<"\n<----Display---->";
 
@@ -155,8 +155,8 @@ int main(){
                                             
                                             if(!fi){
                                                 //cout<<"\033[31;1m Error occured in oprning the file\033[0m";
-                                                error("Error occured while opening the file");
-                                                return 1;
+                                                error("Error occured while opening the file / File does not exist");
+                                                break;
                                             } 
 
                                             delete_anime();
@@ -205,11 +205,16 @@ int main(){
                                         cout<<"\n<----Add---->";
                                         fo.open("manga.dat", ios::out | ios::binary | ios::app);
 
-                                        add_manga();   
+                                        if(add_manga() == 1){
+                                            fo.close();
+                                            break;
+                                        }
+                                        else{
+                                            cout<<"\n Writing into binary file\n";
+                                            fo.write((char*)&ml, sizeof(Manga_list));
+                                            fo.close();
+                                        }
                                         
-                                        cout<<"\n Writing into binary file\n";
-                                        fo.write((char*)&ml, sizeof(Manga_list));
-                                        fo.close();
                                         
                                         if(!fo.good()){
                                             //cout<<"\033[31;1m Error occured at the time of writing\033[0m";
@@ -237,7 +242,11 @@ int main(){
                                         cin.getline(to_be_updated, 100);
 
                                             while(fi.read((char*)&ml, sizeof(Manga_list))){
-                                                if(strcmp(ml.manga_name, to_be_updated) == 0){
+                                               
+                                                strcpy(existing_name, ml.manga_name);
+                                                strcpy(name_to_check, to_be_updated);
+
+                                                if(strcmpi(strip(existing_name), strip(name_to_check)) == 0){
                                                     flag = 1;
                                                     
                                                     update_manga();
@@ -278,8 +287,8 @@ int main(){
                                         
                                         if(!fi){
                                             //cout<<"\033[31;1m Error occured while opening the file\033[0m";
-                                            error("Error occured while opening the file");
-                                            return 1;
+                                            error("Error occured while opening the file / File does not exist");
+                                            break;
                                         }
                                         cout<<"\n<----Display---->";
 
@@ -301,8 +310,8 @@ int main(){
                                             fi.open("manga.dat", ios::in | ios::binary);
                                             if(!fi){
                                                 //cout<<"\033[31;1m Error occured while opening the file\033[0m";
-                                                error("Error occured while opening the file");
-                                                return 1;
+                                                error("Error occured while opening the file / File does not exist");
+                                                break;
                                             } 
 
                                             delete_manga();
@@ -355,7 +364,7 @@ int add_anime(){
     cout<<"\n Anime name: ";
     cin.getline(name, 100);
 
-    if(check(name) == 1)
+    if(anime_check(name) == 1)
         return 1;
     
     strcpy(al.anime_name, name);
@@ -477,9 +486,13 @@ int add_manga(){
 
     cout<<"\n Enter the manga name: ";
     cin.getline(mng, 100);
+
+    if(manga_check(mng) == 1)
+        return 1;
+    
     strcpy(ml.manga_name, mng);
     
-    cout<<" Have you completed reading the manga (y/n): ";
+    cout<<"\n Have you completed reading the manga (y/n): ";
     cin>>fin;
     ml.finished = fin;
    
@@ -551,14 +564,17 @@ return 0;
 }
 
 int delete_manga(){
-    char to_be_deleted[100];
+    char to_be_deleted[100], temp[100];
     flag = 0;
 
     cout<<"\n Enter the name of the manga to be deleted: ";
     cin.getline(to_be_deleted, 100);
 
         while(fi.read((char*)&ml, sizeof(Manga_list))){
-            if(strcmp(ml.manga_name, to_be_deleted) == 0){
+            
+            strcpy(temp, ml.manga_name);
+
+            if(strcmpi(strip(temp), strip(to_be_deleted)) == 0){
                 flag = 1;
                 //success("Manga removed from the list");
             }
@@ -601,7 +617,7 @@ char* strip(char *name){
 return name;
 }
 
-int check(char *Aname){
+int anime_check(char *Aname){
     cout<<"\n Checking database for duplicates...";
     char temp1[100], temp2[100];
     
@@ -612,7 +628,30 @@ int check(char *Aname){
         strcpy(temp2, Aname);
 
         if(strcmpi(strip(temp1), strip(temp2)) == 0){
+            cout<<endl;
             error("Anime already exists");
+            fi.close();
+            return 1;
+        }
+    }
+    cout<<"\n No duplicates found\n";
+    fi.close();
+return 0;
+}
+
+int manga_check(char *Mname){
+    cout<<"\n Checking database for duplicates...";
+    char temp1[100], temp2[100];
+    
+    fi.open("manga.dat", ios::in | ios::binary);
+    while(fi.read((char*)&ml, sizeof(Manga_list))){
+
+        strcpy(temp1, ml.manga_name);
+        strcpy(temp2, Mname);
+
+        if(strcmpi(strip(temp1), strip(temp2)) == 0){
+            cout<<endl;
+            error("Manga already exists");
             fi.close();
             return 1;
         }
