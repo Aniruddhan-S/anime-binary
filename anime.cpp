@@ -50,8 +50,7 @@ int main(){
                                         clear();
                                         cout<<"\n<----Add---->";
                                         fo.open("anime.dat", ios::out | ios::binary | ios::app);
-
-                                        //add_anime(); 
+ 
                                         if(add_anime() == 1){
                                             fo.close();
                                             break;
@@ -63,7 +62,6 @@ int main(){
                                         }
 
                                         if(!fo.good()){
-                                            //cout<<"\033[31;1m Error occured at the time of writing\033[0m";
                                             error("Error occured at the time of writing");
                                             return 1;
                                         }
@@ -79,7 +77,6 @@ int main(){
                                         fi.open("anime.dat", ios::in | ios::binary);
                                         
                                         if(!fi){
-                                            //cout<<"\033[31;1m Error occured at the time of opening the file\033[0m";
                                             error("Error occured while opening the file");
                                             return 1;
                                         }
@@ -112,8 +109,8 @@ int main(){
                                             else if(fo.good()){
                                                 success("Data updation successful");
                                             }
+
                                             if(!flag){
-                                                    //cout<<"\033[31;1m Record not found\033[0m";
                                                     error("Record not found");
                                                     remove("update.dat");
                                                     fi.close();
@@ -130,7 +127,6 @@ int main(){
                                         fi.open("anime.dat", ios::in | ios::binary);
                                         
                                         if(!fi){
-                                            //cout<<"\033[31;1m Error occured at the time of opening the file\033[0m";
                                             error("Error occured while opening the file / File does not exist");
                                             break;
                                         }
@@ -154,7 +150,6 @@ int main(){
                                             fi.open("anime.dat", ios::in | ios::binary);
                                             
                                             if(!fi){
-                                                //cout<<"\033[31;1m Error occured in oprning the file\033[0m";
                                                 error("Error occured while opening the file / File does not exist");
                                                 break;
                                             } 
@@ -162,7 +157,6 @@ int main(){
                                             delete_anime();
 
                                             if(!flag){
-                                                //cout<<"\033[31;1m Record not found\033[0m";
                                                 error("Record not found");
                                                 remove("delete.dat");
                                                 fi.close();
@@ -183,7 +177,6 @@ int main(){
                                         return 1; 
 
                                 default: 
-                                        //cout<<"\033[31;1m Invalid command\033[0m";
                                         error("Invalid command");
                                         break;
                                         
@@ -217,7 +210,6 @@ int main(){
                                         
                                         
                                         if(!fo.good()){
-                                            //cout<<"\033[31;1m Error occured at the time of writing\033[0m";
                                             error("Error occured at the time of writing");
                                             return 1;
                                         }
@@ -233,7 +225,6 @@ int main(){
                                         fi.open("manga.dat", ios::in | ios::binary);
                                         
                                         if(!fi){
-                                            //cout<<"\033[31;1m Error occured while opening the file\033[0m";
                                             error("Error occured while opening the file");                                            
                                             return 1;
                                         }
@@ -268,8 +259,8 @@ int main(){
                                             else if(fo.good()){
                                                 success("Data updation successful");
                                             }
+                                            
                                             if(!flag){
-                                                    //cout<<"\033[31;1m Record not found\033[0m";
                                                     error("Record not found");
                                                     remove("update.dat");
                                                     fi.close();
@@ -286,7 +277,6 @@ int main(){
                                         fi.open("manga.dat", ios::in | ios::binary);
                                         
                                         if(!fi){
-                                            //cout<<"\033[31;1m Error occured while opening the file\033[0m";
                                             error("Error occured while opening the file / File does not exist");
                                             break;
                                         }
@@ -309,7 +299,6 @@ int main(){
                                         if(del == 'y'){
                                             fi.open("manga.dat", ios::in | ios::binary);
                                             if(!fi){
-                                                //cout<<"\033[31;1m Error occured while opening the file\033[0m";
                                                 error("Error occured while opening the file / File does not exist");
                                                 break;
                                             } 
@@ -317,7 +306,6 @@ int main(){
                                             delete_manga();
 
                                             if(!flag){
-                                                //cout<<"\033[31;1;4m Record not found\033[0m";
                                                 error("Record not found");
                                                 remove("delete.dat");
                                                 fi.close();
@@ -338,7 +326,6 @@ int main(){
                                         return 1;
                                 
                                 default:
-                                        //cout<<"\033[31;1m Invalid Command\033[0m";  
                                         error("Invalid Command");
                                         break;      
                             }
@@ -467,7 +454,6 @@ int delete_anime(){
             
             if(strcmpi(strip(original), strip(to_be_deleted)) == 0){
                 flag = 1;
-                //success("Anime removed from the list");
             }
             else{ 
                 fo.open("delete.dat", ios::out | ios::binary | ios::app);
@@ -576,7 +562,6 @@ int delete_manga(){
 
             if(strcmpi(strip(temp), strip(to_be_deleted)) == 0){
                 flag = 1;
-                //success("Manga removed from the list");
             }
             else{ 
                 fo.open("delete.dat", ios::out | ios::binary | ios::app);
@@ -589,18 +574,22 @@ return 0;
 
 // miscellaneous functions
 
+// clears the terminal screen
 void clear(){
     cout<<"\x1B[2J\x1B[H";
 }
 
+// turns the text color red
 void error(string error){
     cout<<"\033[31;1m " + error + "\033[0m";
 }
 
+// turns the text color green
 void success(string success){
     cout<<"\033[32;1m " + success + "\033[0m";
 }
 
+// removes all the spaces in a sentence
 char* strip(char *name){
     int i=0, chk, j;
     
@@ -617,6 +606,7 @@ char* strip(char *name){
 return name;
 }
 
+// checks if the anime passed in the argument and the matching original anime is the same case insensitively
 int anime_check(char *Aname){
     cout<<"\n Checking database for duplicates...";
     char temp1[100], temp2[100];
@@ -639,6 +629,7 @@ int anime_check(char *Aname){
 return 0;
 }
 
+// checks if the manga passed in the argument and the matching original manga is the same case insensitively
 int manga_check(char *Mname){
     cout<<"\n Checking database for duplicates...";
     char temp1[100], temp2[100];

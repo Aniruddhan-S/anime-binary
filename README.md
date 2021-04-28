@@ -1,7 +1,7 @@
 # anime-binary
-**_still under development_**
 
 This is a simple C++ binary file handling program, to keep track of the anime that i've watched and that i'm watching.
+It creates two separate binary files for anime and manga and stores data in it.
 
 As of now it can:
   - Anime:
@@ -37,3 +37,5 @@ Now you may ask, why binary? why so much effort when you can save it as a textfi
 
 Why?
 Because i can.
+
+Plus i'm bored and this is kind of a fun way to kill time.
