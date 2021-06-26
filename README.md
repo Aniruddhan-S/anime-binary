@@ -3,27 +3,42 @@
 This is a simple C++ binary file handling program, to keep track of the anime that i've watched and that i'm watching.
 It creates two separate binary files for anime and manga and stores data in it.
 
-As of now it can:
-  - Anime:
-    - add
-      - anime name
-      - anime completed
-        - if no: season and recent episode watched
-    - update 
-    - display 
-    - delete 
+## Installation
+Clone this repository.
+```
+git clone https://github.com/Igneel001/anime-binary.git
+```
+Compile this program using `g++` or a compiler of your choice.
+```
+g++ anime.cpp 
+```
+Now execute the output file.
 
-  - Manga:
-    - add
-      - manga name
-      - manga completed
-        - if no: recent chapter read
-    - update 
-    - display 
-    - delete
+## Note
+- **In Windows**: It is recommended that this program is executed through the `Windows Terminal` as certain features may break if it is executed in the standard `Command Prompt` or `Powershell`.
+- Make sure the terminal where you execute this program supports mouse scroll and ANSI escape sequence.
+
+## Features
+- Anime:
+  - add
+    - anime name
+    - anime completed (yes/no)
+      - if no: season and recent episode watched
+  - update 
+  - display 
+  - delete 
+
+- Manga:
+  - add
+    - manga name
+    - manga completed (yes/no)
+      - if no: recent chapter read
+  - update 
+  - display 
+  - delete
 
 
-# A little insight on why i did this
+## A little insight on why i did this
 
 It has been long since i used C++, so i thought i'd do something simple in it, just to keep in touch with the language. 
 

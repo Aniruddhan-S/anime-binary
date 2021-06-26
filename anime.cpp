@@ -77,8 +77,8 @@ int main(){
                                         fi.open("anime.dat", ios::in | ios::binary);
                                         
                                         if(!fi){
-                                            error("Error occured while opening the file");
-                                            return 1;
+                                            error("Error occured while opening the file / File does not exist");
+                                            break;
                                         }
                                         cout<<"\n<----Modify---->";
                                         cout<<"\nEnter the name of the anime to be modified: ";
@@ -107,15 +107,16 @@ int main(){
                                                 error("Error occured at the time of writing");
                                             }
                                             else if(fo.good()){
-                                                success("Data updation successful");
-                                            }
-
-                                            if(!flag){
+                                                if(flag == 0){
                                                     error("Record not found");
                                                     remove("update.dat");
                                                     fi.close();
                                                     break;
+                                                }
+                                                else
+                                                    success("Data updation successful");
                                             }
+
                                         fi.close();
                                         remove("anime.dat");
                                         rename("update.dat", "anime.dat");
@@ -225,7 +226,7 @@ int main(){
                                         fi.open("manga.dat", ios::in | ios::binary);
                                         
                                         if(!fi){
-                                            error("Error occured while opening the file");                                            
+                                            error("Error occured while opening the file / File does not exist");                                            
                                             return 1;
                                         }
                                         cout<<"\n<----Modify---->";
@@ -257,15 +258,16 @@ int main(){
                                                 return 1;
                                             }
                                             else if(fo.good()){
-                                                success("Data updation successful");
-                                            }
-                                            
-                                            if(!flag){
+                                                if(!flag){
                                                     error("Record not found");
                                                     remove("update.dat");
                                                     fi.close();
                                                     break;
+                                                }
+                                                else
+                                                    success("Data updation successful");
                                             }
+                                            
                                         fi.close();
                                         remove("manga.dat");
                                         rename("update.dat", "manga.dat");
@@ -360,14 +362,19 @@ int add_anime(){
     cin>>anime_completed;
     al.completed = anime_completed;
                     
-    if(anime_completed == 'n'){
-        cout<<" Enter the season: ";
-        cin>>anime_season;
-        al.season = anime_season;
-        
-        cout<<" Enter the recent episode watched: ";
-        cin>>ep;
-        al.recent_ep_watched = ep;
+    switch(anime_completed){
+        case 'n':   cout<<" Enter the season: ";
+                    cin>>anime_season;
+                    al.season = anime_season;
+                    
+                    cout<<" Enter the recent episode watched: ";
+                    cin>>ep;
+                    al.recent_ep_watched = ep;
+                    break;
+        case 'y':   cout<<"\n";
+                    break;
+        default:    error("Enter valid input");
+                    return 1;
     }
 return 0;
 }
@@ -405,14 +412,14 @@ int update_anime(){
                         }
                     }
                     else if(al.completed == 'y'){
-                        cout<<" You have already completed watching the anime, contuining will set anime completed to 'no'";
+                        cout<<" You have already completed watching the anime, continuing will set anime completed to 'no'";
                         cout<<"\n Do you want to continue? (y/n): ";
                         cin>>y_n;
                         if(y_n == 'y'){
                             al.completed = 'n';
                             cout<<"\n Anime completed status set to 'no'";
                             
-                            cout<<"\n Enter then season: ";
+                            cout<<"\n Enter the season: ";
                             cin>>updated_anime_season;
                             al.season = updated_anime_season;
                             
@@ -481,11 +488,16 @@ int add_manga(){
     cout<<"\n Have you completed reading the manga (y/n): ";
     cin>>fin;
     ml.finished = fin;
-   
-    if(fin == 'n'){
-        cout<<" Enter recent manga chapter read: ";
-        cin>>mng_chap;
-        ml.recent_chap_read = mng_chap;
+
+    switch(fin){
+        case 'n':   cout<<" Enter recent manga chapter read: ";
+                    cin>>mng_chap;
+                    ml.recent_chap_read = mng_chap;
+                    break;
+        case 'y':   cout<<"\n";
+                    break;
+        default:    error("Enter valid input");
+                    return 1;
     }
 return 0;
 }
@@ -518,7 +530,7 @@ int update_manga(){
                         }
                     }
                     else if(ml.finished == 'y'){
-                        cout<<" You have already completed reading the manga, contuining will set manga completed to 'no'";
+                        cout<<" You have already completed reading the manga, continuing will set manga completed to 'no'";
                         cout<<"\n Do you want to continue? (y/n): ";
                         cin>>y_n;
                         
