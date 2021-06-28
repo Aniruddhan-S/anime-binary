@@ -79,13 +79,14 @@ int main(){
                                         }
                                         cout<<"\n<----Modify---->";
                                         cout<<"\nEnter the name of the anime to be modified: ";
+                                        cin.ignore();
                                         cin.getline(to_be_updated, 100);
 
                                             while(fi.read((char*)&al, sizeof(Anime_list))){
                                                 strcpy(existing_name, al.anime_name);
                                                 strcpy(name_to_check, to_be_updated);
                                                 
-                                                if(strcmpi(strip(existing_name), strip(name_to_check)) == 0){
+                                                if(strcasecmp(strip(existing_name), strip(name_to_check)) == 0){
                                                     flag = 1;
                                                     
                                                     update_anime();
@@ -224,6 +225,7 @@ int main(){
                                         }
                                         cout<<"\n<----Modify---->";
                                         cout<<"\nEnter the name of the manga to be modified: ";
+                                        cin.ignore();
                                         cin.getline(to_be_updated, 100);
 
                                             while(fi.read((char*)&ml, sizeof(Manga_list))){
@@ -231,7 +233,7 @@ int main(){
                                                 strcpy(existing_name, ml.manga_name);
                                                 strcpy(name_to_check, to_be_updated);
 
-                                                if(strcmpi(strip(existing_name), strip(name_to_check)) == 0){
+                                                if(strcasecmp(strip(existing_name), strip(name_to_check)) == 0){
                                                     flag = 1;
                                                     
                                                     update_manga();
@@ -342,6 +344,7 @@ int add_anime(){
     int anime_season, ep;
 
     cout<<"\n Anime name: ";
+    cin.ignore();
     cin.getline(name, 100);
 
     if(anime_check(name) == 1)
@@ -383,6 +386,7 @@ int update_anime(){
         switch(choice){
             case 1: 
                     cout<<" Enter new anime name: ";
+                    cin.ignore();
                     cin.getline(updated_anime_name, 100);
                     strcpy(al.anime_name, updated_anime_name);
                     break;
@@ -444,13 +448,14 @@ int delete_anime(){
     flag = 0;
 
     cout<<"\n Enter the name of the anime to be deleted: ";
+    cin.ignore();
     cin.getline(to_be_deleted, 100);
 
         while(fi.read((char*)&al, sizeof(Anime_list))){
             
             strcpy(original, al.anime_name);
             
-            if(strcmpi(strip(original), strip(to_be_deleted)) == 0){
+            if(strcasecmp(strip(original), strip(to_be_deleted)) == 0){
                 flag = 1;
             }
             else{ 
@@ -469,6 +474,7 @@ int add_manga(){
     int mng_chap;
 
     cout<<"\n Enter the manga name: ";
+    cin.ignore();
     cin.getline(mng, 100);
 
     if(manga_check(mng) == 1)
@@ -505,6 +511,7 @@ int update_manga(){
         switch(choice){
             case 1:
                     cout<<" Enter new manga name: ";
+                    cin.ignore();
                     cin.getline(updated_manga_name, 100);
                     strcpy(ml.manga_name, updated_manga_name);
                     break;
@@ -557,13 +564,14 @@ int delete_manga(){
     flag = 0;
 
     cout<<"\n Enter the name of the manga to be deleted: ";
+    cin.ignore();
     cin.getline(to_be_deleted, 100);
 
         while(fi.read((char*)&ml, sizeof(Manga_list))){
             
             strcpy(temp, ml.manga_name);
 
-            if(strcmpi(strip(temp), strip(to_be_deleted)) == 0){
+            if(strcasecmp(strip(temp), strip(to_be_deleted)) == 0){
                 flag = 1;
             }
             else{ 
@@ -579,12 +587,12 @@ return 0;
 
 // error text
 void error(string error){
-    cout<<"---> ERROR: " + error;
+    cout<<"==> ERROR: " + error;
 }
 
 // success text
 void success(string success){
-    cout<<"---> SUCCESS: " + success;
+    cout<<"==> SUCCESS: " + success;
 }
 
 // removes all the spaces in a sentence
@@ -615,7 +623,7 @@ int anime_check(char *Aname){
         strcpy(temp1, al.anime_name);
         strcpy(temp2, Aname);
 
-        if(strcmpi(strip(temp1), strip(temp2)) == 0){
+        if(strcasecmp(strip(temp1), strip(temp2)) == 0){
             cout<<endl;
             error("Anime already exists");
             fi.close();
@@ -638,7 +646,7 @@ int manga_check(char *Mname){
         strcpy(temp1, ml.manga_name);
         strcpy(temp2, Mname);
 
-        if(strcmpi(strip(temp1), strip(temp2)) == 0){
+        if(strcasecmp(strip(temp1), strip(temp2)) == 0){
             cout<<endl;
             error("Manga already exists");
             fi.close();

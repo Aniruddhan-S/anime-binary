@@ -18,6 +18,15 @@ g++ animeWithoutANSI.cpp
 ```
 Now execute the output file in the terminal depending on your operating system.
 
+In Windows:
+```
+a.exe
+``` 
+In Linux:
+```
+./a.out
+```
+
 ## Note
 - **In Windows**: It is recommended that this program is executed through the `Windows Terminal` as certain features may break if it is executed in the standard `Command Prompt` or `Powershell`.
 - Make sure the terminal where you execute this program supports mouse scroll and ANSI escape sequence.
