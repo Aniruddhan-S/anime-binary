@@ -24,7 +24,7 @@ Now execute the output file in the terminal depending on your operating system.
 
 Almost all the terminals support ANSI escape sequence, so it should not be a problem. But if yours does not and you see weird charactes like this when you're executing the program, then go ahead and use `animeWithoutANSI.cpp` instead of `anime.cpp`
 
-![Weird Characters](screenshots/weird-characters.jpg)
+![Weird Characters](https://github.com/Igneel001/anime-binary/blob/main/screenshots/weird-characters.JPG)
 
 `animeWithoutANSI.cpp` as the name suggests, does not have any ANSI escape characters. Hence you won't see any weird characters.
 
