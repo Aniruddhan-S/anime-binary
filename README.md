@@ -8,7 +8,9 @@ Clone this repository.
 ```
 git clone https://github.com/Igneel001/anime-binary.git
 ```
-Compile this program using `g++` or a compiler of your choice.
+If you're in windows, use the program from the `Windows` folder, if you're in linux use the program from the `Linux` folder.
+
+Compile the program using `g++` or a compiler of your choice.
 ```
 g++ anime.cpp 
 ```
