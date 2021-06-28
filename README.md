@@ -12,11 +12,21 @@ Compile this program using `g++` or a compiler of your choice.
 ```
 g++ anime.cpp 
 ```
-Now execute the output file.
+or 
+```
+g++ animeWithoutANSI.cpp
+```
+Now execute the output file in the terminal depending on your operating system.
 
 ## Note
 - **In Windows**: It is recommended that this program is executed through the `Windows Terminal` as certain features may break if it is executed in the standard `Command Prompt` or `Powershell`.
 - Make sure the terminal where you execute this program supports mouse scroll and ANSI escape sequence.
+
+Almost all the terminals support ANSI escape sequence, so it should not be a problem. But if yours does not and you see weird charactes like this when you're executing the program, then go ahead and use `animeWithoutANSI.cpp` instead of `anime.cpp`
+
+![Weird Characters](screenshots/weird-characters.jpg)
+
+`animeWithoutANSI.cpp` as the name suggests, does not have any ANSI escape characters. Hence you won't see any weird characters.
 
 ## Features
 - Anime:
