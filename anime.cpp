@@ -647,7 +647,7 @@ int delete_manga(){
                     flag = 1;
                 }
             #else
-                if(strccasecmp(strip(temp), strip(to_be_deleted)) == 0){
+                if(strcasecmp(strip(temp), strip(to_be_deleted)) == 0){
                     flag = 1;
                 }
             #endif
@@ -743,7 +743,7 @@ int manga_check(char *Mname){
                 return 1;
             }
         #else
-            if(stcasecmp(strip(temp1), strip(temp2)) == 0){
+            if(strcasecmp(strip(temp1), strip(temp2)) == 0){
                 cout<<endl;
                 error("Manga already exists");
                 fi.close();
