@@ -71,6 +71,7 @@ int main(){
 
                                 case 2: 
                                         flag = 0;
+                                        char mod;
                                         fi.open("anime.dat", ios::in | ios::binary);
                                         
                                         if(!fi){
@@ -78,45 +79,66 @@ int main(){
                                             break;
                                         }
                                         cout<<"\n<----Modify---->";
-                                        cout<<"\nEnter the name of the anime to be modified: ";
-                                        cin.getline(to_be_updated, 100);
+                                        cout<<"\nAre you sure you want to update an anime from the list (y/n): ";
+                                        cin>>mod;
+                                        cin.clear();
+                                        cin.sync();
 
-                                            while(fi.read((char*)&al, sizeof(Anime_list))){
-                                                strcpy(existing_name, al.anime_name);
-                                                strcpy(name_to_check, to_be_updated);
-                                                
-                                                if(strcmpi(strip(existing_name), strip(name_to_check)) == 0){
-                                                    flag = 1;
-                                                    
-                                                    update_anime();
+                                        if(mod == 'y' || mod == 'Y'){
+                                            cout<<"\nEnter the name of the anime to be modified: ";
+                                            #ifndef _WIN32
+                                                cin.ignore();
+                                            #endif
+                                            cin.getline(to_be_updated, 100);
 
-                                                    fo.open("update.dat", ios::out | ios::binary | ios::app);
-                                                    fo.write((char*)&al, sizeof(Anime_list));
-                                                    fo.close();
-                                                }
-                                                else{
-                                                    fo.open("update.dat", ios::out | ios::binary | ios::app);
-                                                    fo.write((char*)&al, sizeof(Anime_list));
-                                                    fo.close();
-                                                }
-                                            }
-                                            if(!fo.good()){
-                                                error("Error occured at the time of writing");
-                                            }
-                                            else if(fo.good()){
-                                                if(flag == 0){
-                                                    error("Record not found");
-                                                    remove("update.dat");
-                                                    fi.close();
-                                                    break;
-                                                }
-                                                else
-                                                    success("Data updation successful");
-                                            }
+                                                while(fi.read((char*)&al, sizeof(Anime_list))){
+                                                    strcpy(existing_name, al.anime_name);
+                                                    strcpy(name_to_check, to_be_updated);
+                                                    #ifdef _WIN32
+                                                        if(strcmpi(strip(existing_name), strip(name_to_check)) == 0){
+                                                            flag = 1;
+                                                            
+                                                            update_anime();
 
-                                        fi.close();
-                                        remove("anime.dat");
-                                        rename("update.dat", "anime.dat");
+                                                            fo.open("update.dat", ios::out | ios::binary | ios::app);
+                                                            fo.write((char*)&al, sizeof(Anime_list));
+                                                            fo.close();
+                                                        }
+                                                    #else
+                                                        if(strcasecmp(strip(existing_name), strip(name_to_check)) == 0){
+                                                            flag = 1;
+                                                            
+                                                            update_anime();
+
+                                                            fo.open("update.dat", ios::out | ios::binary | ios::app);
+                                                            fo.write((char*)&al, sizeof(Anime_list));
+                                                            fo.close();
+                                                        }
+                                                    #endif
+                                                        else{
+                                                            fo.open("update.dat", ios::out | ios::binary | ios::app);
+                                                            fo.write((char*)&al, sizeof(Anime_list));
+                                                            fo.close();
+                                                        }
+                                                }
+                                                if(!fo.good()){
+                                                    error("Error occured at the time of writing");
+                                                }
+                                                else if(fo.good()){
+                                                    if(flag == 0){
+                                                        error("Record not found");
+                                                        remove("update.dat");
+                                                        fi.close();
+                                                        break;
+                                                    }
+                                                    else
+                                                        success("Data updation successful");
+                                                }
+
+                                            fi.close();
+                                            remove("anime.dat");
+                                            rename("update.dat", "anime.dat");
+                                        }
                                         cout<<"\n<----Exit---->";
                                         break;
 
@@ -142,7 +164,7 @@ int main(){
                                         cin.clear();
                                         cin.sync();
                                        
-                                        if(del == 'y'){
+                                        if(del == 'y' || del == 'Y'){
                                             fi.open("anime.dat", ios::in | ios::binary);
                                             
                                             if(!fi){
@@ -216,6 +238,7 @@ int main(){
                                 
                                 case 2: 
                                         flag = 0;
+                                        char mod;
                                         fi.open("manga.dat", ios::in | ios::binary);
                                         
                                         if(!fi){
@@ -223,47 +246,68 @@ int main(){
                                             return 1;
                                         }
                                         cout<<"\n<----Modify---->";
-                                        cout<<"\nEnter the name of the manga to be modified: ";
-                                        cin.getline(to_be_updated, 100);
+                                        cout<<"\nAre you sure you want to update a manga in the list (y/n): ";
+                                        cin>>mod;
+                                        cin.clear();
+                                        cin.sync();
 
-                                            while(fi.read((char*)&ml, sizeof(Manga_list))){
-                                               
-                                                strcpy(existing_name, ml.manga_name);
-                                                strcpy(name_to_check, to_be_updated);
+                                        if(mod == 'y' || mod == 'Y'){
+                                            cout<<"\nEnter the name of the manga to be modified: ";
+                                            #ifndef _WIN32
+                                                cin.ignore();
+                                            #endif
+                                            cin.getline(to_be_updated, 100);
 
-                                                if(strcmpi(strip(existing_name), strip(name_to_check)) == 0){
-                                                    flag = 1;
-                                                    
-                                                    update_manga();
+                                                while(fi.read((char*)&ml, sizeof(Manga_list))){
+                                                
+                                                    strcpy(existing_name, ml.manga_name);
+                                                    strcpy(name_to_check, to_be_updated);
+                                                    #ifdef _WIN32
+                                                        if(strcmpi(strip(existing_name), strip(name_to_check)) == 0){
+                                                            flag = 1;
+                                                            
+                                                            update_manga();
 
-                                                    fo.open("update.dat", ios::out | ios::binary | ios::app);
-                                                    fo.write((char*)&ml, sizeof(Manga_list));
-                                                    fo.close();
+                                                            fo.open("update.dat", ios::out | ios::binary | ios::app);
+                                                            fo.write((char*)&ml, sizeof(Manga_list));
+                                                            fo.close();
+                                                        }
+                                                    #else
+                                                        if(strcasecmp(strip(existing_name), strip(name_to_check)) == 0){
+                                                            flag = 1;
+                                                            
+                                                            update_manga();
+
+                                                            fo.open("update.dat", ios::out | ios::binary | ios::app);
+                                                            fo.write((char*)&ml, sizeof(Manga_list));
+                                                            fo.close();
+                                                        }
+                                                    #endif
+                                                        else{
+                                                            fo.open("update.dat", ios::out | ios::binary | ios::app);
+                                                            fo.write((char*)&ml, sizeof(Manga_list));
+                                                            fo.close();
+                                                        }
                                                 }
-                                                else{
-                                                    fo.open("update.dat", ios::out | ios::binary | ios::app);
-                                                    fo.write((char*)&ml, sizeof(Manga_list));
-                                                    fo.close();
+                                                if(!fo.good()){
+                                                    error("Error occured at the time of writing");
+                                                    return 1;
                                                 }
-                                            }
-                                            if(!fo.good()){
-                                                error("Error occured at the time of writing");
-                                                return 1;
-                                            }
-                                            else if(fo.good()){
-                                                if(!flag){
-                                                    error("Record not found");
-                                                    remove("update.dat");
-                                                    fi.close();
-                                                    break;
+                                                else if(fo.good()){
+                                                    if(!flag){
+                                                        error("Record not found");
+                                                        remove("update.dat");
+                                                        fi.close();
+                                                        break;
+                                                    }
+                                                    else
+                                                        success("Data updation successful");
                                                 }
-                                                else
-                                                    success("Data updation successful");
-                                            }
-                                            
-                                        fi.close();
-                                        remove("manga.dat");
-                                        rename("update.dat", "manga.dat");
+                                                
+                                            fi.close();
+                                            remove("manga.dat");
+                                            rename("update.dat", "manga.dat");
+                                        }
                                         cout<<"\n<----Exit---->";
                                         break;
                                 
@@ -289,7 +333,7 @@ int main(){
                                         cin.clear();
                                         cin.sync();
                                         
-                                        if(del == 'y'){
+                                        if(del == 'y' || del == 'Y'){
                                             fi.open("manga.dat", ios::in | ios::binary);
                                             if(!fi){
                                                 error("Error occured while opening the file / File does not exist");
@@ -342,6 +386,9 @@ int add_anime(){
     int anime_season, ep;
 
     cout<<"\n Anime name: ";
+    #ifndef _WIN32
+        cin.ignore();
+    #endif
     cin.getline(name, 100);
 
     if(anime_check(name) == 1)
@@ -351,6 +398,7 @@ int add_anime(){
     
     cout<<"\n Have you completed the anime (y/n): ";
     cin>>anime_completed;
+    anime_completed = tolower(anime_completed);
     al.completed = anime_completed;
                     
     switch(anime_completed){
@@ -383,13 +431,17 @@ int update_anime(){
         switch(choice){
             case 1: 
                     cout<<" Enter new anime name: ";
+                    #ifndef _WIN32
+                        cin.ignore();
+                    #endif
                     cin.getline(updated_anime_name, 100);
                     strcpy(al.anime_name, updated_anime_name);
                     break;
             case 2: 
                     if(al.completed == 'n'){
-                        cout<<" Have you finished watching the anime: ";
+                        cout<<" Have you finished watching the anime (y/n): ";
                         cin>>anime_completed;
+                        anime_completed = tolower(anime_completed);
                         al.completed = anime_completed;
                         
                         if(al.completed == 'n'){
@@ -406,7 +458,7 @@ int update_anime(){
                         cout<<" You have already completed watching the anime, continuing will set anime completed to 'no'";
                         cout<<"\n Do you want to continue? (y/n): ";
                         cin>>y_n;
-                        if(y_n == 'y'){
+                        if(y_n == 'y' || y_n == 'Y'){
                             al.completed = 'n';
                             cout<<"\n Anime completed status set to 'no'";
                             
@@ -444,20 +496,28 @@ int delete_anime(){
     flag = 0;
 
     cout<<"\n Enter the name of the anime to be deleted: ";
+    #ifndef _WIN32
+        cin.ignore();
+    #endif
     cin.getline(to_be_deleted, 100);
 
         while(fi.read((char*)&al, sizeof(Anime_list))){
             
             strcpy(original, al.anime_name);
-            
-            if(strcmpi(strip(original), strip(to_be_deleted)) == 0){
-                flag = 1;
-            }
-            else{ 
-                fo.open("delete.dat", ios::out | ios::binary | ios::app);
-                fo.write((char*)&al, sizeof(Anime_list));
-                fo.close();
-            }
+            #ifdef _WIN32
+                if(strcmpi(strip(original), strip(to_be_deleted)) == 0){
+                    flag = 1;
+                }
+            #else
+                if(strcasecmp(strip(original), strip(to_be_deleted)) == 0){
+                    flag = 1;
+                }
+            #endif
+                else{ 
+                    fo.open("delete.dat", ios::out | ios::binary | ios::app);
+                    fo.write((char*)&al, sizeof(Anime_list));
+                    fo.close();
+                }
         }
 return 0;
 }
@@ -469,6 +529,9 @@ int add_manga(){
     int mng_chap;
 
     cout<<"\n Enter the manga name: ";
+    #ifndef _WIN32
+        cin.ignore();
+    #endif
     cin.getline(mng, 100);
 
     if(manga_check(mng) == 1)
@@ -478,6 +541,7 @@ int add_manga(){
     
     cout<<"\n Have you completed reading the manga (y/n): ";
     cin>>fin;
+    fin = tolower(fin);
     ml.finished = fin;
 
     switch(fin){
@@ -505,6 +569,9 @@ int update_manga(){
         switch(choice){
             case 1:
                     cout<<" Enter new manga name: ";
+                    #ifndef _WIN32
+                        cin.ignore();
+                    #endif
                     cin.getline(updated_manga_name, 100);
                     strcpy(ml.manga_name, updated_manga_name);
                     break;
@@ -512,6 +579,7 @@ int update_manga(){
                     if(ml.finished == 'n'){
                         cout<<" Have you completed the manga (y/n): ";
                         cin>>manga_finished;
+                        manga_finished = tolower(manga_finished);
                         ml.finished = manga_finished;
                         
                         if(ml.finished == 'n'){
@@ -525,7 +593,7 @@ int update_manga(){
                         cout<<"\n Do you want to continue? (y/n): ";
                         cin>>y_n;
                         
-                        if(y_n == 'y'){
+                        if(y_n == 'y' || y_n == 'Y'){
                             ml.finished = 'n';
                             cout<<"\n Manga completed status set to 'no'";
                             
@@ -557,20 +625,28 @@ int delete_manga(){
     flag = 0;
 
     cout<<"\n Enter the name of the manga to be deleted: ";
+    #ifndef _WIN32
+        cin.ignore();
+    #endif
     cin.getline(to_be_deleted, 100);
 
         while(fi.read((char*)&ml, sizeof(Manga_list))){
             
             strcpy(temp, ml.manga_name);
-
-            if(strcmpi(strip(temp), strip(to_be_deleted)) == 0){
-                flag = 1;
-            }
-            else{ 
-                fo.open("delete.dat", ios::out | ios::binary | ios::app);
-                fo.write((char*)&ml, sizeof(Manga_list));
-                fo.close();
-            }
+            #ifdef _WIN32
+                if(strcmpi(strip(temp), strip(to_be_deleted)) == 0){
+                    flag = 1;
+                }
+            #else
+                if(strccasecmp(strip(temp), strip(to_be_deleted)) == 0){
+                    flag = 1;
+                }
+            #endif
+                else{ 
+                    fo.open("delete.dat", ios::out | ios::binary | ios::app);
+                    fo.write((char*)&ml, sizeof(Manga_list));
+                    fo.close();
+                }
         }
 return 0;
 }
@@ -614,13 +690,21 @@ int anime_check(char *Aname){
 
         strcpy(temp1, al.anime_name);
         strcpy(temp2, Aname);
-
-        if(strcmpi(strip(temp1), strip(temp2)) == 0){
-            cout<<endl;
-            error("Anime already exists");
-            fi.close();
-            return 1;
-        }
+        #ifdef _WIN32
+            if(strcmpi(strip(temp1), strip(temp2)) == 0){
+                cout<<endl;
+                error("Anime already exists");
+                fi.close();
+                return 1;
+            }
+        #else
+            if(strcasecmp(strip(temp1), strip(temp2)) == 0){
+                cout<<endl;
+                error("Anime already exists");
+                fi.close();
+                return 1;
+            }
+        #endif
     }
     cout<<"\n No duplicates found\n";
     fi.close();
@@ -637,13 +721,21 @@ int manga_check(char *Mname){
 
         strcpy(temp1, ml.manga_name);
         strcpy(temp2, Mname);
-
-        if(strcmpi(strip(temp1), strip(temp2)) == 0){
-            cout<<endl;
-            error("Manga already exists");
-            fi.close();
-            return 1;
-        }
+        #ifdef _WIN32
+            if(strcmpi(strip(temp1), strip(temp2)) == 0){
+                cout<<endl;
+                error("Manga already exists");
+                fi.close();
+                return 1;
+            }
+        #else
+            if(stcasecmp(strip(temp1), strip(temp2)) == 0){
+                cout<<endl;
+                error("Manga already exists");
+                fi.close();
+                return 1;
+            }
+        #endif
     }
     cout<<"\n No duplicates found\n";
     fi.close();
