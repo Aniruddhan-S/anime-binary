@@ -1,14 +1,23 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <sstream>
 
 using namespace std;
 
-int add_anime(), update_anime(), display_anime(), delete_anime();
-int add_manga(), update_manga(), display_manga(), delete_manga(); 
+
+// Function Declaration
+
+int add_anime(), update_anime(), display_anime(), delete_anime(), search_display_anime();
+int add_manga(), update_manga(), display_manga(), delete_manga(), search_display_manga();
+int add_watchlist_anime(), add_readlist_manga(), update_watchlist_anime(), update_readlist_manga(), display_watchlist_anime(), display_readlist_manga();
+
 void success(string success), error(string error);
 char* strip(char *name);
-int anime_check(char *Aname), manga_check(char *Mname);
+int anime_check(char *Aname), manga_check(char *Mname), watchlist_anime_check(char *WAname), watchlist_manga_check(char *WMname);
+
+
+// Structure Definition 
 
 struct Anime_list{
     char anime_name[100];
@@ -23,16 +32,27 @@ struct Manga_list{
     int recent_chap_read;
 }ml;
 
+struct Watch_list{
+    char anime_to_watch[100];
+    char manga_to_read[100];
+}wl;
+
+
+// Global variables
+
 ifstream fi;  
 ofstream fo; 
 int flag = 0;
 
+
+// Main function
+
 int main(){
 
-    char to_be_updated[100], updated_manga_status, del, existing_name[100], name_to_check[100]; 
-    int ch, updated_manga_chap, AnimeOrManga;
+    char to_be_updated[100], updated_manga_status, del, existing_name[100], name_to_check[100], search_anime[100], search_manga[100], watchlist_anime[100], updated_watchlist_anime[100], watchlist_manga[100], updated_watchlist_manga[100]; 
+    int ch, updated_manga_chap, AnimeOrManga, watch_list, read_list;
     do{
-        cout<<"\n1. Anime \n2. Manga \n3. Exit \nEnter your choice: ";
+        cout<<"\n1. Anime \n2. Manga \n3. Watch List \n4. Exit \nEnter your choice: ";
         cin>>AnimeOrManga;
         switch(AnimeOrManga){
 
@@ -40,12 +60,12 @@ int main(){
             
                 case 1: 
                         do{
-                            cout<<"\n1. Add \n2. Modify \n3. Display \n4. Delete \n5. Exit \nEnter your choice: ";
+                            cout<<"\n1. Add \n2. Modify \n3. Display \n4. Delete \n5. Search \n6. Exit \nEnter your choice: ";
                             cin>>ch;
                             cin.clear();
                             cin.sync();
                             switch(ch){
-                                case 1: 
+                                case 1: // Add anime
                                         cout<<"\n<----Add---->";
                                         fo.open("anime.dat", ios::out | ios::binary | ios::app);
  
@@ -69,7 +89,7 @@ int main(){
                                         cout<<"\n<----Exit---->";
                                         break;
 
-                                case 2: 
+                                case 2: // Update specific anime
                                         flag = 0;
                                         char mod;
                                         fi.open("anime.dat", ios::in | ios::binary);
@@ -142,7 +162,7 @@ int main(){
                                         cout<<"\n<----Exit---->";
                                         break;
 
-                                case 3:
+                                case 3: // Display all anime
                                         fi.open("anime.dat", ios::in | ios::binary);
                                         
                                         if(!fi){
@@ -153,11 +173,11 @@ int main(){
 
                                         display_anime();
                                         
-                                        cout<<"\n<----Exit---->";
                                         fi.close();
+                                        cout<<"\n<----Exit---->";
                                         break;
 
-                                case 4: 
+                                case 4: // Delete specific anime
                                         cout<<"\n<----Delete---->";
                                         cout<<"\nAre you sure you want to delete an anime from the list (y/n): ";
                                         cin>>del;
@@ -190,7 +210,44 @@ int main(){
                                         cout<<"\n<----Exit---->";                
                                         break;
                                 
-                                case 5: 
+                                case 5: // Display specific anime
+                                        cout<<"\n<----Search---->";
+                                        fi.open("anime.dat", ios::in | ios::binary);
+
+                                        cout<<"\n Enter the name of the anime: ";
+                                        #ifndef _WIN32
+                                            cin.ignore();
+                                        #endif
+                                        cin.getline(search_anime, 100);
+
+                                        while(fi.read((char*)&al, sizeof(Anime_list))){
+                                            strcpy(existing_name, al.anime_name);
+                                            strcpy(name_to_check, search_anime);
+                                            
+                                            #ifdef _WIN32
+                                                if(strcmpi(strip(existing_name), strip(name_to_check)) == 0){
+                                                    flag = 1;
+
+                                                    search_display_anime();
+                                                }
+                                            #else
+                                                if(strcasecmp(strip(existing_name), strip(name_to_check)) == 0){
+                                                    flag = 1;
+                                                    
+                                                    search_display_anime();
+                                                }
+                                            #endif
+                                        }
+                                        if(flag == 0){
+                                            error("Record not found");
+                                            fi.close();
+                                            break;
+                                        }
+                                        fi.close();
+                                        cout<<"\n<----Exit---->";    
+                                        break;            
+
+                                case 6: // Exit program
                                         cout<<".\n.\nExiting program\n\n";
                                         return 1; 
 
@@ -199,19 +256,19 @@ int main(){
                                         break;
                                         
                             }
-                        }while(ch != 6);
+                        }while(ch != 7);
                         break;
 
             // Manga commands
                 
                 case 2:
                         do{
-                            cout<<"\n1. Add \n2. Update \n3. Display \n4. Delete \n5. Exit \nEnter your choice: ";
+                            cout<<"\n1. Add \n2. Update \n3. Display \n4. Delete \n5. Search \n6. Exit \nEnter your choice: ";
                             cin>>ch;
                             cin.clear();
                             cin.sync();
                             switch(ch){
-                                case 1: 
+                                case 1: // Add manga
                                         cout<<"\n<----Add---->";
                                         fo.open("manga.dat", ios::out | ios::binary | ios::app);
 
@@ -236,7 +293,7 @@ int main(){
                                         cout<<"\n<----Exit---->";
                                         break;
                                 
-                                case 2: 
+                                case 2: // Update specific manga
                                         flag = 0;
                                         char mod;
                                         fi.open("manga.dat", ios::in | ios::binary);
@@ -311,7 +368,7 @@ int main(){
                                         cout<<"\n<----Exit---->";
                                         break;
                                 
-                                case 3:
+                                case 3: // Display all manga
                                         fi.open("manga.dat", ios::in | ios::binary);
                                         
                                         if(!fi){
@@ -326,7 +383,7 @@ int main(){
                                         fi.close();
                                         break;
                                 
-                                case 4:
+                                case 4: // Delete specific manga
                                         cout<<"\n<----Delete---->";
                                         cout<<"\nAre you sure you want to delete a manga from the list (y/n): ";
                                         cin>>del;
@@ -358,7 +415,44 @@ int main(){
                                         cout<<"\n<----Exit---->";                
                                         break;
                                
-                                case 5: 
+                                case 5: // Display specific manga
+                                        cout<<"\n<----Search---->";
+                                        fi.open("manga.dat", ios::in | ios::binary);
+
+                                        cout<<"\n Enter the name of the manga: ";
+                                        #ifndef _WIN32
+                                            cin.ignore();
+                                        #endif
+                                        cin.getline(search_manga, 100);
+
+                                        while(fi.read((char*)&ml, sizeof(Manga_list))){
+                                            strcpy(existing_name, ml.manga_name);
+                                            strcpy(name_to_check, search_manga);
+                                            
+                                            #ifdef _WIN32
+                                                if(strcmpi(strip(existing_name), strip(name_to_check)) == 0){
+                                                    flag = 1;
+
+                                                    search_display_manga();
+                                                }
+                                            #else
+                                                if(strcasecmp(strip(existing_name), strip(name_to_check)) == 0){
+                                                    flag = 1;
+                                                    
+                                                    search_display_manga();
+                                                }
+                                            #endif
+                                        }
+                                        if(flag == 0){
+                                            error("Record not found");
+                                            fi.close();
+                                            break;
+                                        }
+                                        fi.close();
+                                        cout<<"\n<----Exit---->";    
+                                        break;
+
+                                case 6: // Exit program
                                         cout<<".\n.\nExiting program\n\n";
                                         return 1;
                                 
@@ -366,16 +460,406 @@ int main(){
                                         error("Invalid Command");
                                         break;      
                             }
-                        }while(ch != 6);
+                        }while(ch != 7);
                         break;
                 
-                case 3: return 1;
+                // watch list 
+
+                case 3: 
+                        do{
+                            cout<<"\n1. Anime \n2. Manga \nEnter your choice: ";
+                            cin>>ch;
+                            cin.clear();
+                            cin.sync();
+
+                            switch(ch){
+                                case 1: 
+                                        do{
+                                            cout<<"\n1. Add \n2. Update \n3. Display \n4. Mark as Completed \n5. Exit \nEnter your choice: ";
+                                            cin>>watch_list;
+                                            cin.clear();
+                                            cin.sync();
+
+                                            switch(watch_list){
+                                                case 1: // Add anime name to watchlist
+                                                        cout<<"\n<----Add---->";
+                                                        fo.open("watchlist.dat", ios::out | ios::binary | ios::app);
+                                                        
+                                                        if(add_watchlist_anime() == 1){
+                                                            fo.close();
+                                                            break;
+                                                        }
+                                                        else{
+                                                            cout<<"\n Writing into binary file\n";
+                                                            fo.write((char*)&wl, sizeof(Watch_list));
+                                                            fo.close();
+                                                        }
+                                                                                                            
+                                                        if(!fo.good()){
+                                                            error("Error occured at the time of writing");
+                                                            return 1;
+                                                        }
+                                                        else if(fo.good()){
+                                                            success("Data entry successful");
+                                                        }
+                                                        cout<<"\n<----Exit---->";
+                                                        break;
+
+                                                case 2: // Update anime name
+                                                        char mod;
+                                                        fi.open("watchlist.dat", ios::in | ios::binary);
+                                                        
+                                                        if(!fi){
+                                                            error("Error occured while opening the file / File does not exist");
+                                                            break;
+                                                        }
+                                                        cout<<"\n<----Update---->";
+                                                        cout<<"\nAre you sure you want to update an anime from the list (y/n): ";
+                                                        cin>>mod;
+                                                        cin.clear();
+                                                        cin.sync();
+
+                                                        if(mod == 'y' || mod == 'Y'){
+                                                            cout<<"\nEnter the name of the anime to be modified: ";
+                                                            #ifndef _WIN32
+                                                                cin.ignore();
+                                                            #endif
+                                                            cin.getline(to_be_updated, 100);
+
+                                                                while(fi.read((char*)&wl, sizeof(Watch_list))){
+                                                                    strcpy(existing_name, wl.anime_to_watch);
+                                                                    strcpy(name_to_check, to_be_updated);
+                                                                    #ifdef _WIN32
+                                                                        if(strcmpi(strip(existing_name), strip(name_to_check)) == 0){
+                                                                            flag = 1;
+                                                                            
+                                                                            update_watchlist_anime();
+
+                                                                            fo.open("update.dat", ios::out | ios::binary | ios::app);
+                                                                            fo.write((char*)&wl, sizeof(Watch_list));
+                                                                            fo.close();
+                                                                        }
+                                                                    #else
+                                                                        if(strcasecmp(strip(existing_name), strip(name_to_check)) == 0){
+                                                                            flag = 1;
+
+                                                                            update_watchlist_anime();
+                                                                
+                                                                            fo.open("update.dat", ios::out | ios::binary | ios::app);
+                                                                            fo.write((char*)&wl, sizeof(Watch_list));
+                                                                            fo.close();
+                                                                        }
+                                                                    #endif
+                                                                        else{
+                                                                            fo.open("update.dat", ios::out | ios::binary | ios::app);
+                                                                            fo.write((char*)&wl, sizeof(Watch_list));
+                                                                            fo.close();
+                                                                        }
+                                                                }
+                                                                if(!fo.good()){
+                                                                    error("Error occured at the time of writing");
+                                                                }
+                                                                else if(fo.good()){
+                                                                    if(flag == 0){
+                                                                        error("Record not found");
+                                                                        remove("update.dat");
+                                                                        fi.close();
+                                                                        break;
+                                                                    }
+                                                                    else
+                                                                        success("Data updation successful");
+                                                                }
+
+                                                            fi.close();
+                                                            remove("watchlist.dat");
+                                                            rename("update.dat", "watchlist.dat");
+                                                        }
+                                                        cout<<"\n<----Exit---->";
+                                                        break;
+
+                                                case 3: // Display all watchlist names
+                                                        fi.open("watchlist.dat", ios::in | ios::binary);
+                                                        
+                                                        if(!fi){
+                                                            error("Error occured while opening the file / File does not exist");
+                                                            break;
+                                                        }
+                                                        cout<<"\n<----Display---->";
+
+                                                        display_watchlist_anime();
+                                                        
+                                                        fi.close();
+                                                        cout<<"\n<----Exit---->";
+                                                        break;
+
+                                                case 4: // Delete an anime from the watchlist
+                                                        cout<<"\n<----Delete---->";
+                                                        cout<<"\nAre you sure you want to Mark an anime as Completed from the list (y/n): ";
+                                                        cin>>del;
+                                                        cin.clear();
+                                                        cin.sync();
+                                                    
+                                                        if(del == 'y' || del == 'Y'){
+                                                            fi.open("watchlist.dat", ios::in | ios::binary);
+                                                            
+                                                            if(!fi){
+                                                                error("Error occured while opening the file / File does not exist");
+                                                                break;
+                                                            } 
+
+                                                            char to_be_deleted[100], original[100];
+                                                            flag = 0;
+
+                                                            cout<<"\n Enter the name of the anime to be Marked as Completed: ";
+                                                            #ifndef _WIN32
+                                                                cin.ignore();
+                                                            #endif
+                                                            cin.getline(to_be_deleted, 100);
+                                                            while(fi.read((char*)&wl, sizeof(Watch_list))){
+                
+                                                                strcpy(original, wl.anime_to_watch);
+                                                                #ifdef _WIN32
+                                                                    if(strcmpi(strip(original), strip(to_be_deleted)) == 0){
+                                                                        flag = 1;
+                                                                    }
+                                                                #else
+                                                                    if(strcasecmp(strip(original), strip(to_be_deleted)) == 0){
+                                                                        flag = 1;
+                                                                    }
+                                                                #endif
+                                                                    else{ 
+                                                                        fo.open("delete.dat", ios::out | ios::binary | ios::app);
+                                                                        fo.write((char*)&wl, sizeof(Watch_list));
+                                                                        fo.close();
+                                                                }
+                                                            }
+
+                                                            if(!flag){
+                                                                error("Record not found");
+                                                                remove("delete.dat");
+                                                                fi.close();
+                                                                break;
+                                                            }
+                                                            else{
+                                                                success("Anime marked as completed");
+                                                            }
+                                                            fi.close();
+                                                            remove("watchlist.dat");
+                                                            rename("delete.dat", "watchlist.dat");
+                                                        }
+                                                        cout<<"\n<----Exit---->";                
+                                                        break;                                                        
+                                                
+                                                case 5: // Exit program
+                                                        cout<<".\n.\nExiting program\n\n";
+                                                        return 1;
+
+                                                default: 
+                                                        error("Invalid command");
+                                                        break;
+                                            }
+                                        }while(watch_list != 6); 
+                                        break;
+                                
+                                case 2: 
+                                        do{
+                                            cout<<"\n1. Add \n2. Update \n3. Display \n4. Mark as Read \n5. Exit \nEnter your choice: ";
+                                            cin>>read_list;
+                                            cin.clear();
+                                            cin.sync();
+
+                                            switch(read_list){
+                                                case 1: // Add manga name to watchlist
+                                                        cout<<"\n<----Add---->";
+                                                        fo.open("watchlist.dat", ios::out | ios::binary | ios::app);
+                                                        
+                                                        if(add_readlist_manga() == 1){
+                                                            fo.close();
+                                                            break;
+                                                        }
+                                                        else{
+                                                            cout<<"\n Writing into binary file\n";
+                                                            fo.write((char*)&wl, sizeof(Watch_list));
+                                                            fo.close();
+                                                        }
+                                                                                                            
+                                                        if(!fo.good()){
+                                                            error("Error occured at the time of writing");
+                                                            return 1;
+                                                        }
+                                                        else if(fo.good()){
+                                                            success("Data entry successful");
+                                                        }
+                                                        cout<<"\n<----Exit---->";
+                                                        break;
+
+                                                case 2: // Update manga name
+                                                        char mod;
+                                                        fi.open("watchlist.dat", ios::in | ios::binary);
+                                                        
+                                                        if(!fi){
+                                                            error("Error occured while opening the file / File does not exist");
+                                                            break;
+                                                        }
+                                                        cout<<"\n<----Update---->";
+                                                        cout<<"\nAre you sure you want to update a manga from the list (y/n): ";
+                                                        cin>>mod;
+                                                        cin.clear();
+                                                        cin.sync();
+
+                                                        if(mod == 'y' || mod == 'Y'){
+                                                            cout<<"\nEnter the name of the manga to be modified: ";
+                                                            #ifndef _WIN32
+                                                                cin.ignore();
+                                                            #endif
+                                                            cin.getline(to_be_updated, 100);
+
+                                                                while(fi.read((char*)&wl, sizeof(Watch_list))){
+                                                                    strcpy(existing_name, wl.manga_to_read);
+                                                                    strcpy(name_to_check, to_be_updated);
+                                                                    #ifdef _WIN32
+                                                                        if(strcmpi(strip(existing_name), strip(name_to_check)) == 0){
+                                                                            flag = 1;
+                                                                            
+                                                                            update_readlist_manga();
+
+                                                                            fo.open("update.dat", ios::out | ios::binary | ios::app);
+                                                                            fo.write((char*)&wl, sizeof(Watch_list));
+                                                                            fo.close();
+                                                                        }
+                                                                    #else
+                                                                        if(strcasecmp(strip(existing_name), strip(name_to_check)) == 0){
+                                                                            flag = 1;
+
+                                                                            update_readlist_manga();
+                                                                
+                                                                            fo.open("update.dat", ios::out | ios::binary | ios::app);
+                                                                            fo.write((char*)&wl, sizeof(Watch_list));
+                                                                            fo.close();
+                                                                        }
+                                                                    #endif
+                                                                        else{
+                                                                            fo.open("update.dat", ios::out | ios::binary | ios::app);
+                                                                            fo.write((char*)&wl, sizeof(Watch_list));
+                                                                            fo.close();
+                                                                        }
+                                                                }
+                                                                if(!fo.good()){
+                                                                    error("Error occured at the time of writing");
+                                                                }
+                                                                else if(fo.good()){
+                                                                    if(flag == 0){
+                                                                        error("Record not found");
+                                                                        remove("update.dat");
+                                                                        fi.close();
+                                                                        break;
+                                                                    }
+                                                                    else
+                                                                        success("Data updation successful");
+                                                                }
+
+                                                            fi.close();
+                                                            remove("watchlist.dat");
+                                                            rename("update.dat", "watchlist.dat");
+                                                        }
+                                                        cout<<"\n<----Exit---->";
+                                                        break;
+
+                                                case 3: // Display all watchlist names
+                                                        fi.open("watchlist.dat", ios::in | ios::binary);
+                                                        
+                                                        if(!fi){
+                                                            error("Error occured while opening the file / File does not exist");
+                                                            break;
+                                                        }
+                                                        cout<<"\n<----Display---->";
+
+                                                        display_readlist_manga();
+                                                        
+                                                        fi.close();
+                                                        cout<<"\n<----Exit---->";
+                                                        break;
+
+                                                case 4: // Delete a manga from the list
+                                                        cout<<"\n<----Delete---->";
+                                                        cout<<"\nAre you sure you want to Mark an manga as Completed from the list (y/n): ";
+                                                        cin>>del;
+                                                        cin.clear();
+                                                        cin.sync();
+                                                    
+                                                        if(del == 'y' || del == 'Y'){
+                                                            fi.open("watchlist.dat", ios::in | ios::binary);
+                                                            
+                                                            if(!fi){
+                                                                error("Error occured while opening the file / File does not exist");
+                                                                break;
+                                                            } 
+
+                                                            char to_be_deleted[100], original[100];
+                                                            flag = 0;
+
+                                                            cout<<"\n Enter the name of the manga to be Marked as Read: ";
+                                                            #ifndef _WIN32
+                                                                cin.ignore();
+                                                            #endif
+                                                            cin.getline(to_be_deleted, 100);
+                                                            while(fi.read((char*)&wl, sizeof(Watch_list))){
+                
+                                                                strcpy(original, wl.manga_to_read);
+                                                                #ifdef _WIN32
+                                                                    if(strcmpi(strip(original), strip(to_be_deleted)) == 0){
+                                                                        flag = 1;
+                                                                    }
+                                                                #else
+                                                                    if(strcasecmp(strip(original), strip(to_be_deleted)) == 0){
+                                                                        flag = 1;
+                                                                    }
+                                                                #endif
+                                                                    else{ 
+                                                                        fo.open("delete.dat", ios::out | ios::binary | ios::app);
+                                                                        fo.write((char*)&wl, sizeof(Watch_list));
+                                                                        fo.close();
+                                                                }
+                                                            }
+
+                                                            if(!flag){
+                                                                error("Record not found");
+                                                                remove("delete.dat");
+                                                                fi.close();
+                                                                break;
+                                                            }
+                                                            else{
+                                                                success("Anime marked as completed");
+                                                            }
+                                                            fi.close();
+                                                            remove("watchlist.dat");
+                                                            rename("delete.dat", "watchlist.dat");
+                                                        }
+                                                        cout<<"\n<----Exit---->";                
+                                                        break;                                                        
+                                                
+                                                case 5: // Exit program
+                                                        cout<<".\n.\nExiting program\n\n";
+                                                        return 1;
+
+                                                default: 
+                                                        error("Invalid command");
+                                                        break;
+                                            }
+                                        }while(read_list != 6); 
+                                        break;
+
+                            }
+                        }while(ch != 4);
+                        break;
+                
+                case 4: return 1;
                 
                 default: 
                         error("Invalid Command");
                         break;
         }
-    }while(AnimeOrManga != 4);
+    }while(AnimeOrManga != 5);
 return 0;
 }
 
@@ -522,6 +1006,17 @@ int delete_anime(){
 return 0;
 }
 
+int search_display_anime(){
+    cout<<"\n------------------------------------------------------------------\n\n";
+    cout<<"\tAnime name ................. "<<al.anime_name<<endl;
+    cout<<"\tAnime completed ............ "<<al.completed<<endl;
+    if(al.completed == 'n'){
+        cout<<"\tSeason ..................... "<<al.season<<endl;
+        cout<<"\tRecent episode watched ..... "<<al.recent_ep_watched<<endl;
+    }
+return 0;
+}
+
 // manga user defined functions
 
 int add_manga(){
@@ -651,6 +1146,96 @@ int delete_manga(){
 return 0;
 }
 
+int search_display_manga(){
+    cout<<"\n------------------------------------------------------------------\n\n";
+    cout<<"\tManga name ................. "<<ml.manga_name<<endl;
+    cout<<"\tManga completed: ........... "<<ml.finished<<endl;
+    if(ml.finished == 'n')
+        cout<<"\tRecent manga chapter read .. "<<ml.recent_chap_read<<endl;
+return 0;
+}
+
+// watch list user defined functions
+
+int add_watchlist_anime(){
+    char watchlist_anime[100];
+
+    cout<<"\n Anime name: ";
+    #ifndef _WIN32
+        cin.ignore();
+    #endif
+    cin.getline(watchlist_anime, 100);
+    
+    if(watchlist_anime_check(watchlist_anime) == 1)
+        return 1;
+
+    strcpy(wl.anime_to_watch, watchlist_anime);
+return 0;
+}
+
+int add_readlist_manga(){
+    char watchlist_manga[100];
+
+    cout<<"\n Manga name: ";
+    #ifndef _WIN32
+        cin.ignore();
+    #endif
+    cin.getline(watchlist_manga, 100);
+    
+    if(watchlist_manga_check(watchlist_manga) == 1)
+        return 1;
+
+    strcpy(wl.manga_to_read, watchlist_manga);
+return 0;
+}
+
+int update_watchlist_anime(){
+        char updated_watchlist_anime[100];
+
+        cout<<" Enter new anime name: ";
+        #ifndef _WIN32
+            cin.ignore();
+        #endif                                                                            
+        cin.getline(updated_watchlist_anime, 100);
+        strcpy(wl.anime_to_watch, updated_watchlist_anime);
+
+return 0;
+}
+
+int update_readlist_manga(){
+    char updated_readlist_manga[100];
+
+    cout<<" Enter new manga name: ";
+    #ifndef _WIN32
+        cin.ignore();
+    #endif
+    cin.getline(updated_readlist_manga, 100);
+    strcpy(wl.manga_to_read, updated_readlist_manga);
+return 0;
+}
+
+
+int display_watchlist_anime(){
+    int i = 1;
+    cout<<"\n------------------------------------------------------------------\n\n";
+    while(fi.read((char*)&wl, sizeof(Watch_list))){
+        cout<<"\t"<<i<<") "<<wl.anime_to_watch<<endl;
+        i += 1;
+    }
+return 0;
+}
+
+int display_readlist_manga(){
+    int i = 1;
+    cout<<"\n------------------------------------------------------------------\n\n";
+    while(fi.read((char*)&wl, sizeof(Watch_list))){
+        cout<<"\t"<<i<<") "<<wl.manga_to_read<<endl;
+        i += 1;
+    }
+return 0;
+}
+
+
 // miscellaneous functions
 
 // error text
@@ -721,6 +1306,68 @@ int manga_check(char *Mname){
 
         strcpy(temp1, ml.manga_name);
         strcpy(temp2, Mname);
+        #ifdef _WIN32
+            if(strcmpi(strip(temp1), strip(temp2)) == 0){
+                cout<<endl;
+                error("Manga already exists");
+                fi.close();
+                return 1;
+            }
+        #else
+            if(strcasecmp(strip(temp1), strip(temp2)) == 0){
+                cout<<endl;
+                error("Manga already exists");
+                fi.close();
+                return 1;
+            }
+        #endif
+    }
+    cout<<"\n No duplicates found\n";
+    fi.close();
+return 0;
+}
+
+// checks if the anime passed in the argument and the matching original anime is the same case insensitively
+int watchlist_anime_check(char *WAname){
+    cout<<"\n Checking database for duplicates...";
+    char temp1[100], temp2[100];
+    
+    fi.open("watchlist.dat", ios::in | ios::binary);
+    while(fi.read((char*)&wl, sizeof(Watch_list))){
+
+        strcpy(temp1, wl.anime_to_watch);
+        strcpy(temp2, WAname);
+        #ifdef _WIN32
+            if(strcmpi(strip(temp1), strip(temp2)) == 0){
+                cout<<endl;
+                error("Anime already exists");
+                fi.close();
+                return 1;
+            }
+        #else
+            if(strcasecmp(strip(temp1), strip(temp2)) == 0){
+                cout<<endl;
+                error("Anime already exists");
+                fi.close();
+                return 1;
+            }
+        #endif
+    }
+    cout<<"\n No duplicates found\n";
+    fi.close();
+return 0;
+}
+
+// checks if the manga passed in the argument and the matching original manga is the same case insensitively
+int watchlist_manga_check(char *WMname){
+    cout<<"\n Checking database for duplicates...";
+    char temp1[100], temp2[100];
+    
+    fi.open("manga.dat", ios::in | ios::binary);
+    while(fi.read((char*)&wl, sizeof(Watch_list))){
+
+        strcpy(temp1, wl.manga_to_read);
+        strcpy(temp2, WMname);
         #ifdef _WIN32
             if(strcmpi(strip(temp1), strip(temp2)) == 0){
                 cout<<endl;
