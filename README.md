@@ -1,7 +1,6 @@
 # anime-binary
 
-This is a simple C++ binary file handling program, to keep track of the anime that i've watched and am watching, manga that i've read and am reading and my watchlist.
-It creates three separate binary files for anime, manga and watchlist and stores data in it.
+This is a simple C++ Command Line Interface program, to keep track of the anime that i've watched and am watching, manga that i've read and am reading and my watchlist.
 
 ## Note
 - **In Windows**: It is recommended that this program is executed through the `Windows Terminal` as certain features may break if it is executed in the standard `Command Prompt` or `Powershell`.
@@ -59,11 +58,16 @@ In Unix:
   - delete
 
 - Watch List:
-  - add
-    - anime/manga name
-  - update
-  - display
-  - mark as completed
+  - Anime:
+    - add anime name
+    - update
+    - display 
+    - mark as completed
+  - Manga:
+    - add manga name
+    - update
+    - display 
+    - mark as read
 
 ## A little insight on why i did this
 

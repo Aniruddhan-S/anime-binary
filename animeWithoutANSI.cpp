@@ -483,7 +483,7 @@ int main(){
                                             switch(watch_list){
                                                 case 1: // Add anime name to watchlist
                                                         cout<<"\n<----Add---->";
-                                                        fo.open("watchlist.dat", ios::out | ios::binary | ios::app);
+                                                        fo.open("anime_watchlist.dat", ios::out | ios::binary | ios::app);
                                                         
                                                         if(add_watchlist_anime() == 1){
                                                             fo.close();
@@ -507,7 +507,7 @@ int main(){
 
                                                 case 2: // Update anime name
                                                         char mod;
-                                                        fi.open("watchlist.dat", ios::in | ios::binary);
+                                                        fi.open("anime_watchlist.dat", ios::in | ios::binary);
                                                         
                                                         if(!fi){
                                                             error("Error occured while opening the file / File does not exist");
@@ -571,14 +571,14 @@ int main(){
                                                                 }
 
                                                             fi.close();
-                                                            remove("watchlist.dat");
-                                                            rename("update.dat", "watchlist.dat");
+                                                            remove("anime_watchlist.dat");
+                                                            rename("update.dat", "anime_watchlist.dat");
                                                         }
                                                         cout<<"\n<----Exit---->";
                                                         break;
 
                                                 case 3: // Display all watchlist names
-                                                        fi.open("watchlist.dat", ios::in | ios::binary);
+                                                        fi.open("anime_watchlist.dat", ios::in | ios::binary);
                                                         
                                                         if(!fi){
                                                             error("Error occured while opening the file / File does not exist");
@@ -600,7 +600,7 @@ int main(){
                                                         cin.sync();
                                                     
                                                         if(del == 'y' || del == 'Y'){
-                                                            fi.open("watchlist.dat", ios::in | ios::binary);
+                                                            fi.open("anime_watchlist.dat", ios::in | ios::binary);
                                                             
                                                             if(!fi){
                                                                 error("Error occured while opening the file / File does not exist");
@@ -644,8 +644,8 @@ int main(){
                                                                 success("Anime marked as completed");
                                                             }
                                                             fi.close();
-                                                            remove("watchlist.dat");
-                                                            rename("delete.dat", "watchlist.dat");
+                                                            remove("anime_watchlist.dat");
+                                                            rename("delete.dat", "anime_watchlist.dat");
                                                         }
                                                         cout<<"\n<----Exit---->";                
                                                         break;                                                        
@@ -671,7 +671,7 @@ int main(){
                                             switch(read_list){
                                                 case 1: // Add manga name to watchlist
                                                         cout<<"\n<----Add---->";
-                                                        fo.open("watchlist.dat", ios::out | ios::binary | ios::app);
+                                                        fo.open("manga_watchlist.dat", ios::out | ios::binary | ios::app);
                                                         
                                                         if(add_readlist_manga() == 1){
                                                             fo.close();
@@ -695,7 +695,7 @@ int main(){
 
                                                 case 2: // Update manga name
                                                         char mod;
-                                                        fi.open("watchlist.dat", ios::in | ios::binary);
+                                                        fi.open("manga_watchlist.dat", ios::in | ios::binary);
                                                         
                                                         if(!fi){
                                                             error("Error occured while opening the file / File does not exist");
@@ -759,14 +759,14 @@ int main(){
                                                                 }
 
                                                             fi.close();
-                                                            remove("watchlist.dat");
-                                                            rename("update.dat", "watchlist.dat");
+                                                            remove("manga_watchlist.dat");
+                                                            rename("update.dat", "manga_watchlist.dat");
                                                         }
                                                         cout<<"\n<----Exit---->";
                                                         break;
 
                                                 case 3: // Display all watchlist names
-                                                        fi.open("watchlist.dat", ios::in | ios::binary);
+                                                        fi.open("manga_watchlist.dat", ios::in | ios::binary);
                                                         
                                                         if(!fi){
                                                             error("Error occured while opening the file / File does not exist");
@@ -788,7 +788,7 @@ int main(){
                                                         cin.sync();
                                                     
                                                         if(del == 'y' || del == 'Y'){
-                                                            fi.open("watchlist.dat", ios::in | ios::binary);
+                                                            fi.open("manga_watchlist.dat", ios::in | ios::binary);
                                                             
                                                             if(!fi){
                                                                 error("Error occured while opening the file / File does not exist");
@@ -832,8 +832,8 @@ int main(){
                                                                 success("Anime marked as completed");
                                                             }
                                                             fi.close();
-                                                            remove("watchlist.dat");
-                                                            rename("delete.dat", "watchlist.dat");
+                                                            remove("manga_watchlist.dat");
+                                                            rename("delete.dat", "manga_watchlist.dat");
                                                         }
                                                         cout<<"\n<----Exit---->";                
                                                         break;                                                        
@@ -1332,7 +1332,7 @@ int watchlist_anime_check(char *WAname){
     cout<<"\n Checking database for duplicates...";
     char temp1[100], temp2[100];
     
-    fi.open("watchlist.dat", ios::in | ios::binary);
+    fi.open("anime_watchlist.dat", ios::in | ios::binary);
     while(fi.read((char*)&wl, sizeof(Watch_list))){
 
         strcpy(temp1, wl.anime_to_watch);
@@ -1363,7 +1363,7 @@ int watchlist_manga_check(char *WMname){
     cout<<"\n Checking database for duplicates...";
     char temp1[100], temp2[100];
     
-    fi.open("manga.dat", ios::in | ios::binary);
+    fi.open("manga_watchlist.dat", ios::in | ios::binary);
     while(fi.read((char*)&wl, sizeof(Watch_list))){
 
         strcpy(temp1, wl.manga_to_read);
